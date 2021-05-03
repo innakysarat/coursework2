@@ -50,7 +50,7 @@ public class Internship {
     private boolean isChecked;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "internship_id", referencedColumnName = "organization_id")
+    @JoinColumn(name = "id", referencedColumnName = "organization_id")
     private Organization organization;
 
     public Long getInternship_id() {
