@@ -2,13 +2,16 @@ package com.example.coursework.student;
 
 import com.example.coursework.organizations.Organization;
 import com.example.coursework.security.UserRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "User")
@@ -70,7 +73,7 @@ public class User implements UserDetails {
             name = "birth"
     )
     private LocalDate dayOfBirth;
-    /*@Transient // = not a column
+   /* @Transient // = not a column
     private Integer age;*/
     @Column(
             name = "email",
@@ -85,15 +88,14 @@ public class User implements UserDetails {
 
     public User() {
         grantedAuthorities = UserRole.STUDENT.getGrantedAuthorities();
+      /*  if (dayOfBirth != null) {
+            this.age = Period.between(dayOfBirth, LocalDate.now()).getYears();
+        }*/
     }
 
-    @ManyToMany
-    @JoinTable(
-            name = "leaders_organizations",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "organization_id")
-    )
-    Set<Organization> organizations;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "leaders")
+    private Set<Organization> organizations = new HashSet<>();
     @Transient
     private Set<? extends GrantedAuthority> grantedAuthorities;
     @Transient
@@ -178,9 +180,9 @@ public class User implements UserDetails {
         return patronymic;
     }
 
-    public Integer getAge() {
+ /*   public Integer getAge() {
         return Period.between(dayOfBirth, LocalDate.now()).getYears();
-    }
+    }*/
 
     public String getEmail() {
         return email;

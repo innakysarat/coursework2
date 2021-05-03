@@ -1,9 +1,11 @@
 package com.example.coursework.organizations;
 
+import com.example.coursework.internships.Internship;
 import com.example.coursework.student.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -42,9 +44,16 @@ public class Organization {
             columnDefinition = "TEXT"
     )
     private String reference;
+    @ManyToMany
+    @JoinTable(
+            name = "leaders_organizations",
+            joinColumns = @JoinColumn(name = "organization_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> leaders = new HashSet<>();
     @JsonIgnore
-    @ManyToMany(mappedBy = "organizations")
-    Set<User> leaders;
+    @OneToMany(mappedBy = "organization")
+    private Set<Internship> internships = new HashSet<>();
 
     public Long getOrganization_id() {
         return organization_id;
@@ -64,5 +73,17 @@ public class Organization {
 
     public void addLeader(User user) {
         leaders.add(user);
+    }
+
+    public Set<User> getLeaders() {
+        return leaders;
+    }
+
+    public Set<Internship> getInternships() {
+        return internships;
+    }
+
+    public void addInternship(Internship internship) {
+        internships.add(internship);
     }
 }

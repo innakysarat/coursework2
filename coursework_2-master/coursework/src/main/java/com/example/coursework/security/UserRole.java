@@ -10,8 +10,8 @@ import static com.example.coursework.security.UserPermission.*;
 
 public enum UserRole {
     STUDENT(Sets.newHashSet(COURSE_READ, STUDENT_READ)),
-    ADMIN(Sets.newHashSet(COURSE_READ, COURSE_WRITE, STUDENT_READ, STUDENT_WRITE)),
-    LEADER(Sets.newHashSet(COURSE_READ));
+    ADMIN(Sets.newHashSet(COURSE_READ, COURSE_WRITE, STUDENT_READ, STUDENT_WRITE, ORGANIZATION_WRITE, ORGANIZATION_READ)),
+    LEADER(Sets.newHashSet(COURSE_READ, COURSE_WRITE, ORGANIZATION_WRITE));
 
     private final Set<UserPermission> permissions;
 

@@ -40,7 +40,7 @@ public class TokenVerifier extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
 
-        //get token from header
+        // get token from header
         String authorizationHeader = request.getHeader("Authorization");
         // reject auth
         if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {

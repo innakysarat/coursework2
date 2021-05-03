@@ -115,6 +115,9 @@ public class StudentService implements UserDetailsService {
             }
             userDetails.setGrantedAuthorities(UserRole.ADMIN.getGrantedAuthorities());
         } else if (role.equals("LEADER")) {
+            for (SimpleGrantedAuthority s : UserRole.LEADER.getGrantedAuthorities()) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(s.getAuthority()));
+            }
             userDetails.setGrantedAuthorities(UserRole.LEADER.getGrantedAuthorities());
         } else {
             for (SimpleGrantedAuthority s : UserRole.STUDENT.getGrantedAuthorities()) {

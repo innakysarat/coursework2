@@ -1,9 +1,11 @@
 package com.example.coursework.organizations;
 
+import com.example.coursework.internships.Internship;
+import com.example.coursework.student.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrganizaitionService {
@@ -14,11 +16,11 @@ public class OrganizaitionService {
         this.organizaitionRepository = organizaitionRepository;
     }
 
-    public void addOrganization(Organization organization) {
+    public Organization addOrganization(Organization organization) {
       /*  if (organizaitionRepository.existsByName(organization.getName())) {
             throw new IllegalStateException("Organization exists");
         }*/
-        organizaitionRepository.save(organization);
+        return organizaitionRepository.save(organization);
     }
 
     public Organization getOrganization(Long organization_id) {
@@ -28,6 +30,25 @@ public class OrganizaitionService {
         } else {
             throw new IllegalStateException("Organization doesn't exist");
         }
+    }
+
+    public List<Organization> getOrganizations() {
+        return organizaitionRepository.findAll();
+    }
+
+    public Set<User> getLeadersOfOrganization(Long organization_id) {
+        Optional<Organization> organizationOptional = organizaitionRepository.findById(organization_id);
+        Organization organization;
+        Set<User> users = new HashSet<>();
+       // String users = "";
+        if (organizationOptional.isPresent()) {
+            organization = organizationOptional.get();
+            users = organization.getLeaders();
+
+         /*   User u = organization.getLeaders().stream().findFirst().get();
+            users = u.getUsername();*/
+        }
+        return users;
     }
 
 }

@@ -10,8 +10,8 @@ import java.util.List;
 @RequestMapping("api/v1/students")
 public class StudentController {
     private final StudentService studentService;
-    @Autowired
-    private StudentRepository studentRepository;
+   // @Autowired
+   //  private StudentRepository studentRepository;
 
     @Autowired
     public StudentController(StudentService studentService) {

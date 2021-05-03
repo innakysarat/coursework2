@@ -1,9 +1,11 @@
 package com.example.coursework.internships;
 
+import com.example.coursework.organizations.Organization;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity(name="Internship")
+@Entity(name = "Internship")
 @Table(
         name = "internship"
 )
@@ -35,18 +37,51 @@ public class Internship {
     )
     private String description;
     @Column(
-            name = "startDate"
+            name = "start_date"
     )
     private LocalDate startDate;
     @Column(
-            name = "finishDate"
+            name = "finish_date"
     )
     private LocalDate finishDate;
     @Column(
-            name = "isChecked"
+            name = "is_checked"
     )
     private boolean isChecked;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "internship_id", referencedColumnName = "organization_id")
+    private Organization organization;
 
+    public Long getInternship_id() {
+        return internship_id;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public LocalDate getFinishDate() {
+        return finishDate;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void assignOrganization(Organization organization) {
+        this.organization = organization;
+    }
 }

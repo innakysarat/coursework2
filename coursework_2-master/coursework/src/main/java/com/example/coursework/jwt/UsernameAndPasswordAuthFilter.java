@@ -27,7 +27,7 @@ public class UsernameAndPasswordAuthFilter extends UsernamePasswordAuthenticatio
     private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
 
-    @Autowired
+   // @Autowired
     public UsernameAndPasswordAuthFilter(AuthenticationManager authenticationManager,
                                          JwtConfig jwtConfig,
                                          SecretKey secretKey) {
