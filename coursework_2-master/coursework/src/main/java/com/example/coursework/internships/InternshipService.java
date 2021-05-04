@@ -1,5 +1,6 @@
 package com.example.coursework.internships;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Optional;
 public class InternshipService {
     private final InternshipRepository internshipRepository;
 
+    @Autowired
     public InternshipService(InternshipRepository internshipRepository) {
         this.internshipRepository = internshipRepository;
     }

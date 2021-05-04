@@ -1,5 +1,6 @@
 package com.example.coursework.internships;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 public class InternshipController {
     private final InternshipService internshipService;
 
+    @Autowired
     public InternshipController(InternshipService internshipService) {
         this.internshipService = internshipService;
     }
