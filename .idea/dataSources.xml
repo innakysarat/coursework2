@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="internships@localhost" uuid="f092be58-66fb-4f0a-9ad0-1a9eb81d280a">
+    <data-source source="LOCAL" name="internships@localhost" uuid="d9931783-9c2a-48a6-b9e2-1829d99a9dcf">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:5432/internships</jdbc-url>
-    </data-source>
-    <data-source source="LOCAL" name="heroku" uuid="72c5eef7-ee27-4aaf-864c-cc0dbda0c111">
-      <driver-ref>postgresql</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://ec2-18-214-140-149.compute-1.amazonaws.com:5432/d7k610p000e69o</jdbc-url>
-      <driver-properties>
-        <property name="ssl" value="true" />
-        <property name="sslmode" value="require" />
-        <property name="sslfactory" value="org.postgresql.ssl.NonValidatingFactory" />
-      </driver-properties>
     </data-source>
   </component>
 </project>

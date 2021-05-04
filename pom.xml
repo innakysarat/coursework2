@@ -87,6 +87,22 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- JAXB -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.3.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -96,12 +112,12 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>repackage</goal>
+							<goal>build-info</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-					<skip>true</skip>
+					<mainClass>com.example.coursework.CourseworkApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
