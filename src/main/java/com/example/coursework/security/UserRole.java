@@ -9,8 +9,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import static com.example.coursework.security.UserPermission.*;
 
 public enum UserRole {
-    STUDENT(Sets.newHashSet(COURSE_READ, STUDENT_READ)),
-    ADMIN(Sets.newHashSet(COURSE_READ, COURSE_WRITE, STUDENT_READ, STUDENT_WRITE, ORGANIZATION_WRITE, ORGANIZATION_READ)),
+    STUDENT(Sets.newHashSet(COURSE_READ, STUDENT_READ, REVIEW_ADD, REVIEW_EDIT)),
+    ADMIN(Sets.newHashSet(COURSE_READ, COURSE_WRITE, COURSE_CHECK, STUDENT_READ, STUDENT_WRITE, ORGANIZATION_WRITE, ORGANIZATION_READ, REVIEW_EDIT)),
     LEADER(Sets.newHashSet(COURSE_READ, COURSE_WRITE, ORGANIZATION_WRITE));
 
     private final Set<UserPermission> permissions;

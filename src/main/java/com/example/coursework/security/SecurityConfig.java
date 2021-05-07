@@ -85,8 +85,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new UsernameAndPasswordAuthFilter(authenticationManager(), jwtConfig, secretKey))
                 .addFilterAfter(new TokenVerifier(secretKey, jwtConfig), UsernameAndPasswordAuthFilter.class)
                 .authorizeRequests()
-                .antMatchers("/", "/api/v1/students/registration", "index", "/css/*", "/js/*").permitAll()
-               // .antMatchers("/organizations/registration").hasRole(UserRole.LEADER.name())
+                .antMatchers("/**", "/api/students", "/internships", "index", "/css/*", "/js/*").permitAll()
+                // .antMatchers("/organizations/registration").hasRole(UserRole.LEADER.name())
                 //.antMatchers("/api/**").hasRole(UserRole.STUDENT.name())
                 .anyRequest()
                 .authenticated();

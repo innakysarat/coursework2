@@ -1,6 +1,7 @@
 package com.example.coursework.student;
 
 import com.example.coursework.organizations.Organization;
+import com.example.coursework.reviews.Review;
 import com.example.coursework.security.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity(name = "User")
@@ -73,8 +75,8 @@ public class User implements UserDetails {
             name = "birth"
     )
     private LocalDate dayOfBirth;
-   /* @Transient // = not a column
-    private Integer age;*/
+    /* @Transient // = not a column
+     private Integer age;*/
     @Column(
             name = "email",
             columnDefinition = "TEXT"
@@ -96,6 +98,24 @@ public class User implements UserDetails {
     @JsonIgnore
     @ManyToMany(mappedBy = "leaders")
     private Set<Organization> organizations = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Review> reviews;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return user_id.equals(user.user_id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user_id);
+    }
+
     @Transient
     private Set<? extends GrantedAuthority> grantedAuthorities;
     @Transient
@@ -118,10 +138,6 @@ public class User implements UserDetails {
         } else {
             grantedAuthorities = UserRole.STUDENT.getGrantedAuthorities();
         }
-       /* isAccountNonExpired = true;
-        isAccountNonLocked = true;
-        isCredentialsNonExpired = true;
-        isEnabled = true;*/
     }
 
     // +image
@@ -145,10 +161,6 @@ public class User implements UserDetails {
         } else {
             grantedAuthorities = UserRole.STUDENT.getGrantedAuthorities();
         }
-      /*  isAccountNonExpired = true;
-        isAccountNonLocked = true;
-        isCredentialsNonExpired = true;
-        isEnabled = true;*/
         // this.age = Period.between(dayOfBirth, LocalDate.now()).getYears();
     }
 
@@ -190,6 +202,10 @@ public class User implements UserDetails {
 
     public String getPhone() {
         return phone;
+    }
+
+    public LocalDate getDayOfBirth() {
+        return dayOfBirth;
     }
 
     public void setUser_id(Integer studentId) {
@@ -249,7 +265,7 @@ public class User implements UserDetails {
         return true;
     }
 
-    // @Override
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         if (role.equals("ADMIN"))
@@ -271,6 +287,22 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Organization> getOrganizations() {
+        return organizations;
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public void addOrganization(Organization organization) {
+        organizations.add(organization);
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
     }
 
     @Override

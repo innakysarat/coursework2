@@ -1,46 +1,50 @@
 package com.example.coursework.student;
 
-import com.example.coursework.security.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("api/v1/students")
+@RequestMapping("api/students")
 public class StudentController {
     private final StudentService studentService;
-   // @Autowired
-   //  private StudentRepository studentRepository;
 
     @Autowired
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
 
-  /*  @GetMapping
-    public List<User> getStudents() {
-        return null;
-        // return studentService.getStudents();
-    }*/
+    @GetMapping()
+    public User getInfoAboutMyself() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication == null ? null : (String) authentication.getPrincipal();
+        User user;
+        if (username != null) {
+            user = studentService.getUser(username);
+        } else {
+            throw new IllegalStateException("User is not found");
+        }
+        return user;
+    }
 
-    @PostMapping(path = "/registration")
+    @PostMapping()
     public void registerNewStudent(@RequestBody User user) {
-        studentService.addNewStudent(user);
-    }
-/*
-    @DeleteMapping(path = "{studentId}")
-    public void deleteStudent(@PathVariable("studentId") Integer studentId) {
-       // studentService.deleteStudent(studentId);
+        studentService.addUser(user);
     }
 
-    @PutMapping(path = "{studentId}")
-    public void updateStudent(
-            @PathVariable("studentId") Integer studentId,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String email) {
-
-     //   studentService.updateStudent(studentId, name, email);
-    }*/
-
+    @PutMapping(path = "/{user_id}")
+    public void updateInfo(@PathVariable Integer user_id,
+                           @RequestBody User user_update) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication == null ? null : (String) authentication.getPrincipal();
+        if (username != null) {
+            studentService.updateStudentByHimself(user_id, username, user_update.getName(), user_update.getSurname(),
+                    user_update.getPatronymic(), user_update.getEmail(), user_update.getPhone(),
+                    user_update.getUsername(), user_update.getPassword(),
+                    user_update.getDayOfBirth());
+        }
+    }
 }

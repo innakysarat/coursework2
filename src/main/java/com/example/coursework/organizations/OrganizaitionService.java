@@ -1,7 +1,7 @@
 package com.example.coursework.organizations;
 
-import com.example.coursework.internships.Internship;
 import com.example.coursework.student.User;
+import com.example.coursework.student.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,17 +10,21 @@ import java.util.*;
 @Service
 public class OrganizaitionService {
     private final OrganizaitionRepository organizaitionRepository;
-
+    private final UserRepository userRepository;
     @Autowired
-    public OrganizaitionService(OrganizaitionRepository organizaitionRepository) {
+    public OrganizaitionService(OrganizaitionRepository organizaitionRepository, UserRepository userRepository) {
         this.organizaitionRepository = organizaitionRepository;
+        this.userRepository = userRepository;
     }
 
-    public Organization addOrganization(Organization organization) {
+    public void addOrganization(String username, Organization organization) {
       /*  if (organizaitionRepository.existsByName(organization.getName())) {
             throw new IllegalStateException("Organization exists");
         }*/
-        return organizaitionRepository.save(organization);
+        User user = userRepository.findByUsername(username);
+        user.addOrganization(organization); // добавляем связь руководитель - организация
+        organization.addLeader(user); // добавляем в список руководителей организации данного руководителя
+        organizaitionRepository.save(organization);
     }
 
     public Organization getOrganization(Long organization_id) {
@@ -40,13 +44,9 @@ public class OrganizaitionService {
         Optional<Organization> organizationOptional = organizaitionRepository.findById(organization_id);
         Organization organization;
         Set<User> users = new HashSet<>();
-       // String users = "";
         if (organizationOptional.isPresent()) {
             organization = organizationOptional.get();
             users = organization.getLeaders();
-
-         /*   User u = organization.getLeaders().stream().findFirst().get();
-            users = u.getUsername();*/
         }
         return users;
     }

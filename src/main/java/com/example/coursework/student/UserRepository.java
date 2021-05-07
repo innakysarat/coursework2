@@ -9,13 +9,15 @@ import java.util.Optional;
 
 // responsible for data access
 @Repository
-public interface StudentRepository extends
+public interface UserRepository extends
         JpaRepository<User, Integer> {
 
     //@Query("SELECT s FROM User s WHERE s.email = ?1")
-    User findStudentByEmail(String email);
+    User findByEmail(String email);
 
     User findByUsername(String username);
+
+    User findByPhone(String phone);
     //User findById(Integer id);
     // public Optional<User> selectUserByUsername(String username);
 }

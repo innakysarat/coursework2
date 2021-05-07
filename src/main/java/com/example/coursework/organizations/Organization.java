@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "organization",
+@Table(name = "organizations",
         uniqueConstraints = {
                 @UniqueConstraint(name = "name_unique", columnNames = "organization_name"),
         })
@@ -51,7 +51,7 @@ public class Organization {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> leaders = new HashSet<>();
-    @JsonIgnore
+
     @OneToMany(mappedBy = "organization")
     private Set<Internship> internships = new HashSet<>();
 
