@@ -30,8 +30,8 @@ public class OrganizationController {
         if (username != null) {
             organizaitionService.addOrganization(username, organization);
         }// else {
-       //     throw new IllegalStateException("User must login");
-      //  }
+        //     throw new IllegalStateException("User must login");
+        //  }
     }
 
     @GetMapping(path = "/{organization_id}")
@@ -61,21 +61,23 @@ public class OrganizationController {
             @RequestParam("username") String username
     ) {
         Organization organization = organizaitionService.getOrganization(organization_id);
-         organizaitionService.addOrganization(username, organization);
+        organizaitionService.addOrganization(username, organization);
     }
 
-   /*  @PutMapping("/{organization_id}/internships/{internship_id}")
-    @PreAuthorize("hasAuthority('organization:write')")
-    public Internship addInternshipToOrganization(
-            @PathVariable Long organization_id,
-            @PathVariable Long internship_id
-    ) {
-        Organization organization = organizaitionService.getOrganization(organization_id);
-        Internship internship = internshipService.getInternship(internship_id);
-        organization.addInternship(internship);
-        internship.assignOrganization(organization);
-        return internshipService.addInternship(internship);
-    }*/
-
-
+    /*  @PutMapping("/{organization_id}/internships/{internship_id}")
+     @PreAuthorize("hasAuthority('organization:write')")
+     public Internship addInternshipToOrganization(
+             @PathVariable Long organization_id,
+             @PathVariable Long internship_id
+     ) {
+         Organization organization = organizaitionService.getOrganization(organization_id);
+         Internship internship = internshipService.getInternship(internship_id);
+         organization.addInternship(internship);
+         internship.assignOrganization(organization);
+         return internshipService.addInternship(internship);
+     }*/
+    @DeleteMapping(path = "/{organization_id}")
+    public void deleteOrganization(@PathVariable Long organization_id) {
+    organizaitionService.deleteOrganization(organization_id);
+    }
 }

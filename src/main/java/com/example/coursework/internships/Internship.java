@@ -11,20 +11,15 @@ import java.util.Set;
 
 @Entity
 @Table(
-        name = "internship"
+        name = "internship",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "name_unique", columnNames = "internship_name"),
+        }
 )
 public class Internship {
 
     @Id
-    @SequenceGenerator(
-            name = "internship_sequence",
-            sequenceName = "internship_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "internship_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(
             name = "internship_id",
             updatable = false
@@ -35,7 +30,6 @@ public class Internship {
             columnDefinition = "TEXT"
     )
     private String name;
-    // массив ???
     @Column(
             name = "description",
             columnDefinition = "TEXT"
@@ -74,15 +68,15 @@ public class Internship {
     )
     private boolean isChecked;
 
-
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id", referencedColumnName = "organization_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "organization_id")
     private Organization organization;
+    public Internship() {
+    }
 
-    // @JsonIgnore
-    @OneToMany(mappedBy = "internship", fetch = FetchType.EAGER)
-    public Set<Review> reviews = new HashSet<>(); // cascade?
+    @OneToMany(mappedBy = "internship", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    public Set<Review> reviews = new HashSet<>();
 
 
     public Long getInternship_id() {
@@ -117,7 +111,7 @@ public class Internship {
         return reviews;
     }
 
-    public String getCountry_column() {
+    public String getCountry() {
         return country;
     }
 

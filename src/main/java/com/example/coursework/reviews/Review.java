@@ -12,15 +12,7 @@ import javax.persistence.*;
 )
 public class Review {
     @Id
-    @SequenceGenerator(
-            name = "review_sequence",
-            sequenceName = "review_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "review_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(
             name = "review_id",
             updatable = false

@@ -1,5 +1,6 @@
 package com.example.coursework.internships;
 
+import com.example.coursework.student.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -21,9 +22,8 @@ public class InternshipController {
     @PostMapping()
     @PreAuthorize("hasAuthority('course:write')")
     public void addInternship(@RequestBody Internship internship,
-                              @RequestParam("organization_name") String name,
                               @RequestParam("organization_id") Long organization_id) {
-        internshipService.addInternship(organization_id, name, internship);
+        internshipService.addInternship(organization_id, internship);
     }
 
     @GetMapping()
@@ -45,10 +45,14 @@ public class InternshipController {
     @PutMapping(path = "/{internship_id}")
     @PreAuthorize("hasAuthority('course:write')")
     public void updateInternship(@PathVariable Long internship_id,
-                                 @RequestParam("internship_name") String name,
                                  @RequestBody Internship internship) {
         // добавить проверку на организацию - та ли исправляет
-        internshipService.updateInternship(internship_id, name, internship.getName(), internship.getDescription(),
+        internshipService.updateInternship(internship_id, internship.getName(), internship.getDescription(),
                 internship.getStartDate(), internship.getFinishDate());
+    }
+
+    @DeleteMapping(path = "/{internship_id}")
+    public void deleteInternship(@PathVariable Long internship_id) {
+        internshipService.deleteInternship(internship_id);
     }
 }

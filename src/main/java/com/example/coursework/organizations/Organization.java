@@ -15,15 +15,7 @@ import java.util.Set;
         })
 public class Organization {
     @Id
-    @SequenceGenerator(
-            name = "organization_sequence",
-            sequenceName = "organization_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "organization_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(
             name = "organization_id",
             updatable = false
@@ -45,11 +37,14 @@ public class Organization {
     @JoinTable(
             name = "leaders_organizations",
             joinColumns = @JoinColumn(name = "organization_id"),
-            inverseJoinColumns = @JoinColumn(name = "leader_id")
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> leaders;
+    private final Set<User> leaders = new HashSet<>();
+    public Organization(){
 
-    @OneToMany(mappedBy = "organization")
+    }
+
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
     private final Set<Internship> internships = new HashSet<>();
 
     public Long getOrganization_id() {
@@ -77,10 +72,10 @@ public class Organization {
     }
 
     public Set<Internship> getInternships() {
-        return internships;
+        return this.internships;
     }
 
     public void addInternship(Internship internship) {
-        internships.add(internship);
+        this.internships.add(internship);
     }
 }

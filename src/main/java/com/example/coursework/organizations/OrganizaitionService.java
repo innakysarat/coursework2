@@ -1,5 +1,6 @@
 package com.example.coursework.organizations;
 
+import com.example.coursework.internships.Internship;
 import com.example.coursework.student.User;
 import com.example.coursework.student.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,10 @@ public class OrganizaitionService {
     }
 
     public void addOrganization(String username, Organization organization) {
-      /*  if (organizaitionRepository.existsByName(organization.getName())) {
-            throw new IllegalStateException("Organization exists");
-        }*/
-        System.out.println(username);
         User user = userRepository.findByUsername(username);
         if (user != null) {
             user.addOrganization(organization); // добавляем связь руководитель - организация
-            // organization.addLeader(user); // добавляем в список руководителей организации данного руководителя
+          //  organization.addLeader(user); // добавляем в список руководителей организации данного руководителя
             organizaitionRepository.save(organization);
         } else {
             throw new IllegalStateException("Leader is absent");
@@ -57,4 +54,11 @@ public class OrganizaitionService {
         return users;
     }
 
+    public void deleteOrganization(Long organization_id) {
+        boolean exists = organizaitionRepository.existsById(organization_id);
+        if (!exists) {
+            throw new IllegalStateException("Internship with id " + organization_id + " doesn't exist");
+        }
+        organizaitionRepository.deleteById(organization_id);
+    }
 }
