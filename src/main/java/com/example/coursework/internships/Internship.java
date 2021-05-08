@@ -160,4 +160,5 @@ public class Internship {
     public void setFinishDate(LocalDate finishDate) {
         this.finishDate = finishDate;
     }
+
 }

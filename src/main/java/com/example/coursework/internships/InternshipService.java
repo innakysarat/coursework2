@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class InternshipService {
     private final InternshipRepository internshipRepository;
-    private final OrganizaitionRepository organizaitionRepository;
+    private final OrganizaitionRepository organizationRepository;
     private final CountryDao countryDao;
     private final LanguageDao languageDao;
     private final PriceDao priceDao;
@@ -28,7 +28,7 @@ public class InternshipService {
                              CountryDao countryDAO, LanguageDao languageDao,
                              PriceDao priceDao, SubjectDao subjectDao) {
         this.internshipRepository = internshipRepository;
-        this.organizaitionRepository = organizaitionRepository;
+        this.organizationRepository = organizaitionRepository;
         this.countryDao = countryDAO;
         this.languageDao = languageDao;
         this.priceDao = priceDao;
@@ -50,17 +50,15 @@ public class InternshipService {
 
     public void addInternship(Long organization_id, String name, Internship internship) {
         //Optional<Organization> organizationOptional = organizaitionRepository.findById(organization_id);
-        System.out.println(organization_id);
-        Organization organization = organizaitionRepository.findByName(name);
+        Organization organization = organizationRepository.findByName(name);
         //if (organizationOptional.isPresent()) {
         // Organization organization = organizationOptional.get();
-        System.out.println(organization.getName());
-        internship.assignOrganization(organization); // добавляем связь стажировка - организация
+        //internship.assignOrganization(organization); // добавляем связь стажировка - организация
         organization.addInternship(internship); // добавляем к списку стажировок орагнизации данную стажировку
-        countryDao.addCountry(internship.getCountry_column());
+     /*   countryDao.addCountry(internship.getCountry_column());
         subjectDao.addSubject(internship.getSubject());
         languageDao.addLanguage(internship.getLanguage());
-        priceDao.addPrice(internship.getPrice());
+        priceDao.addPrice(internship.getPrice());*/
         internshipRepository.save(internship);
     }
     //}
