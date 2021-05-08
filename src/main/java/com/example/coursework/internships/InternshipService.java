@@ -48,21 +48,22 @@ public class InternshipService {
         return internshipRepository.findAll();
     }
 
-    public void addInternship(Long organization_id, Internship internship) {
-        Optional<Organization> organizationOptional = organizaitionRepository.findById(organization_id);
+    public void addInternship(Long organization_id, String name, Internship internship) {
+        //Optional<Organization> organizationOptional = organizaitionRepository.findById(organization_id);
         System.out.println(organization_id);
-        if (organizationOptional.isPresent()) {
-            Organization organization = organizationOptional.get();
-            System.out.println(organization.getName());
-            internship.assignOrganization(organization); // добавляем связь стажировка - организация
-            organization.addInternship(internship); // добавляем к списку стажировок орагнизации данную стажировку
-            countryDao.addCountry(internship.getCountry_column());
-            subjectDao.addSubject(internship.getSubject());
-            languageDao.addLanguage(internship.getLanguage());
-            priceDao.addPrice(internship.getPrice());
-            internshipRepository.save(internship);
-        }
+        Organization organization = organizaitionRepository.findByName(name);
+        //if (organizationOptional.isPresent()) {
+        // Organization organization = organizationOptional.get();
+        System.out.println(organization.getName());
+        internship.assignOrganization(organization); // добавляем связь стажировка - организация
+        organization.addInternship(internship); // добавляем к списку стажировок орагнизации данную стажировку
+        countryDao.addCountry(internship.getCountry_column());
+        subjectDao.addSubject(internship.getSubject());
+        languageDao.addLanguage(internship.getLanguage());
+        priceDao.addPrice(internship.getPrice());
+        internshipRepository.save(internship);
     }
+    //}
 
     public void checkInternship(Long internship_id) {
         Optional<Internship> internshipOptional = internshipRepository.findById(internship_id);

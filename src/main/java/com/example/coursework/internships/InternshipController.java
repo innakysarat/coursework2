@@ -21,8 +21,9 @@ public class InternshipController {
     @PostMapping()
     @PreAuthorize("hasAuthority('course:write')")
     public void addInternship(@RequestBody Internship internship,
+                              @RequestParam("organization_name") String name,
                               @RequestParam("organization_id") Long organization_id) {
-        internshipService.addInternship(organization_id, internship);
+        internshipService.addInternship(organization_id, name, internship);
     }
 
     @GetMapping()
