@@ -1,8 +1,5 @@
 package com.example.coursework.organizations;
 
-import com.example.coursework.internships.Internship;
-import com.example.coursework.internships.InternshipService;
-import com.example.coursework.student.StudentService;
 import com.example.coursework.student.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

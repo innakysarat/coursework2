@@ -9,9 +9,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "organizations",
+@Table(name = "organization",
         uniqueConstraints = {
-                @UniqueConstraint(name = "name_unique", columnNames = "organization_name"),
+                @UniqueConstraint(name = "name_unique", columnNames = "name"),
         })
 public class Organization {
     @Id
@@ -30,17 +30,14 @@ public class Organization {
     )
     private Long organization_id;
     @Column(
-            name = "organization_name",
             columnDefinition = "TEXT"
     )
     private String name;
     @Column(
-            name = "organization_description",
             columnDefinition = "TEXT"
     )
     private String description;
     @Column(
-            name = "reference",
             columnDefinition = "TEXT"
     )
     private String reference;

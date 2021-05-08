@@ -3,6 +3,7 @@ package com.example.coursework.internships;
 import com.example.coursework.options.*;
 import com.example.coursework.organizations.OrganizaitionRepository;
 import com.example.coursework.organizations.Organization;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class InternshipService {
     private final LanguageDao languageDao;
     private final PriceDao priceDao;
     private final SubjectDao subjectDao;
+
 
     @Autowired
     public InternshipService(InternshipRepository internshipRepository,
