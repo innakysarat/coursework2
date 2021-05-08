@@ -50,7 +50,7 @@ public class Organization {
     private Set<User> leaders;
 
     @OneToMany(mappedBy = "organization")
-    private Set<Internship> internships;
+    private final Set<Internship> internships = new HashSet<>();
 
     public Long getOrganization_id() {
         return organization_id;

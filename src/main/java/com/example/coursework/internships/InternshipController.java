@@ -44,9 +44,10 @@ public class InternshipController {
     @PutMapping(path = "/{internship_id}")
     @PreAuthorize("hasAuthority('course:write')")
     public void updateInternship(@PathVariable Long internship_id,
+                                 @RequestParam("internship_name") String name,
                                  @RequestBody Internship internship) {
         // добавить проверку на организацию - та ли исправляет
-        internshipService.updateInternship(internship_id, internship.getName(), internship.getDescription(),
+        internshipService.updateInternship(internship_id, name, internship.getName(), internship.getDescription(),
                 internship.getStartDate(), internship.getFinishDate());
     }
 }

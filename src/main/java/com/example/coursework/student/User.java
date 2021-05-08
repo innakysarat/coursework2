@@ -43,6 +43,7 @@ public class User implements UserDetails {
     private Integer user_id;
     @Column(
             name = "username",
+            nullable = false,
             columnDefinition = "TEXT"
     )
     private String username;
@@ -53,6 +54,7 @@ public class User implements UserDetails {
     private String role;
     @Column(
             name = "password",
+            nullable = false,
             columnDefinition = "TEXT"
     )
     private String password;

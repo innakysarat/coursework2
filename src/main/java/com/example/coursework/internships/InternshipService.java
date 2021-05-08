@@ -50,8 +50,10 @@ public class InternshipService {
 
     public void addInternship(Long organization_id, Internship internship) {
         Optional<Organization> organizationOptional = organizaitionRepository.findById(organization_id);
+        System.out.println(organization_id);
         if (organizationOptional.isPresent()) {
             Organization organization = organizationOptional.get();
+            System.out.println(organization.getName());
             internship.assignOrganization(organization); // добавляем связь стажировка - организация
             organization.addInternship(internship); // добавляем к списку стажировок орагнизации данную стажировку
             countryDao.addCountry(internship.getCountry_column());
@@ -70,31 +72,33 @@ public class InternshipService {
         }
     }
 
-    public void updateInternship(Long internship_id, String name, String description,
+    public void updateInternship(Long internship_id, String name_int, String name, String description,
                                  LocalDate startDate, LocalDate finishDate) {
-        Optional<Internship> internshipOptional = internshipRepository.findById(internship_id);
-        if (internshipOptional.isPresent()) {
-            Internship internship = internshipOptional.get();
-            if (name != null &&
-                    name.length() > 0 &&
-                    !Objects.equals(internship.getName(), name)) {
-                internship.setName(name);
-            }
-            if (description != null &&
-                    description.length() > 0 &&
-                    !Objects.equals(internship.getDescription(), description)) {
-                internship.setDescription(description);
-            }
-            if (startDate != null &&
-                    !Objects.equals(internship.getStartDate(), startDate)) {
-                internship.setStartDate(startDate);
-            }
-            if (finishDate != null &&
-                    !Objects.equals(internship.getFinishDate(), finishDate)) {
-                internship.setFinishDate(finishDate);
-            }
-            internship.setChecked(false);
+        //Optional<Internship> internshipOptional = internshipRepository.findById(internship_id);
+        // if (internshipOptional.isPresent()) {
+
+        //Internship internship = internshipOptional.get();
+        Internship internship = internshipRepository.findByName(name_int);
+        if (name != null &&
+                name.length() > 0 &&
+                !Objects.equals(internship.getName(), name)) {
+            internship.setName(name);
         }
+        if (description != null &&
+                description.length() > 0 &&
+                !Objects.equals(internship.getDescription(), description)) {
+            internship.setDescription(description);
+        }
+        if (startDate != null &&
+                !Objects.equals(internship.getStartDate(), startDate)) {
+            internship.setStartDate(startDate);
+        }
+        if (finishDate != null &&
+                !Objects.equals(internship.getFinishDate(), finishDate)) {
+            internship.setFinishDate(finishDate);
+        }
+        internship.setChecked(false);
     }
+}
 
 }
