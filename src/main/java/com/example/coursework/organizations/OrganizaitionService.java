@@ -11,6 +11,7 @@ import java.util.*;
 public class OrganizaitionService {
     private final OrganizaitionRepository organizaitionRepository;
     private final UserRepository userRepository;
+
     @Autowired
     public OrganizaitionService(OrganizaitionRepository organizaitionRepository, UserRepository userRepository) {
         this.organizaitionRepository = organizaitionRepository;
@@ -21,10 +22,15 @@ public class OrganizaitionService {
       /*  if (organizaitionRepository.existsByName(organization.getName())) {
             throw new IllegalStateException("Organization exists");
         }*/
+        System.out.println(username);
         User user = userRepository.findByUsername(username);
-        user.addOrganization(organization); // добавляем связь руководитель - организация
-        organization.addLeader(user); // добавляем в список руководителей организации данного руководителя
-        organizaitionRepository.save(organization);
+        if (user != null) {
+            user.addOrganization(organization); // добавляем связь руководитель - организация
+            // organization.addLeader(user); // добавляем в список руководителей организации данного руководителя
+            organizaitionRepository.save(organization);
+        } else {
+            throw new IllegalStateException("Leader is absent");
+        }
     }
 
     public Organization getOrganization(Long organization_id) {

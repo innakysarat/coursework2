@@ -97,7 +97,7 @@ public class User implements UserDetails {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "leaders")
-    private Set<Organization> organizations = new HashSet<>();
+    private Set<Organization> organizations;
 
     @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -298,7 +298,7 @@ public class User implements UserDetails {
     }
 
     public void addOrganization(Organization organization) {
-        organizations.add(organization);
+        this.organizations.add(organization);
     }
 
     public void addReview(Review review) {

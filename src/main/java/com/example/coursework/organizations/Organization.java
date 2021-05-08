@@ -45,12 +45,12 @@ public class Organization {
     @JoinTable(
             name = "leaders_organizations",
             joinColumns = @JoinColumn(name = "organization_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            inverseJoinColumns = @JoinColumn(name = "leader_id")
     )
-    private Set<User> leaders = new HashSet<>();
+    private Set<User> leaders;
 
     @OneToMany(mappedBy = "organization")
-    private Set<Internship> internships = new HashSet<>();
+    private Set<Internship> internships;
 
     public Long getOrganization_id() {
         return organization_id;
@@ -69,7 +69,7 @@ public class Organization {
     }
 
     public void addLeader(User user) {
-        leaders.add(user);
+        this.leaders.add(user);
     }
 
     public Set<User> getLeaders() {

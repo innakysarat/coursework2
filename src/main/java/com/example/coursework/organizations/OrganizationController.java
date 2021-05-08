@@ -29,9 +29,9 @@ public class OrganizationController {
         String username = authentication == null ? null : (String) authentication.getPrincipal();
         if (username != null) {
             organizaitionService.addOrganization(username, organization);
-        } else {
-            throw new IllegalStateException("User must login");
-        }
+        }// else {
+       //     throw new IllegalStateException("User must login");
+      //  }
     }
 
     @GetMapping(path = "/{organization_id}")
