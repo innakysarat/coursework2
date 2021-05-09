@@ -8,7 +8,11 @@ import java.util.Set;
 @Component
 public class PriceDao {
 
-    Set<Integer> prices = new LinkedHashSet<>();
+    private final Set<Integer> prices;
+
+    public PriceDao() {
+        prices = new LinkedHashSet<>();
+    }
 
     public void addPrice(Integer price) {
         prices.add(price);
@@ -19,11 +23,8 @@ public class PriceDao {
         public void addInternship(Internship internship){
             internships.add(internship);
         }*/
-    Double asDouble(Object o) {
-        Double val = null;
-        if (o instanceof Number) {
-            val = ((Number) o).doubleValue();
-        }
-        return val;
+
+    public Set<Integer> getPrices() {
+        return prices;
     }
 }

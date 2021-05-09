@@ -1,4 +1,9 @@
-/*package com.example.coursework.internships;
+package com.example.coursework.internships;
+
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.core.types.dsl.StringPath;
 
 public class InternshipPredicate {
 
@@ -10,7 +15,7 @@ public class InternshipPredicate {
     }
 
     public BooleanExpression getPredicate() {
-        final PathBuilder<Internship> entityPath = new PathBuilder<>(MyUser.class, "myUser");
+        final PathBuilder<Internship> entityPath = new PathBuilder<>(Internship.class, "internship");
 
         if (isNumeric(criteria.getValue().toString())) {
             final NumberPath<Integer> path = entityPath.getNumber(criteria.getKey(), Integer.class);
@@ -48,4 +53,5 @@ public class InternshipPredicate {
         }
         return true;
     }
-}*/
+}
+

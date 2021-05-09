@@ -78,4 +78,16 @@ public class Organization {
     public void addInternship(Internship internship) {
         this.internships.add(internship);
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
 }

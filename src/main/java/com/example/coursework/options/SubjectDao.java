@@ -7,10 +7,17 @@ import java.util.Set;
 
 @Component
 public class SubjectDao {
-    Set<String> subjects = new LinkedHashSet<>();
+    private final Set<String> subjects;
 
+    public SubjectDao(){
+        subjects = new LinkedHashSet<>();
+    }
     public void addSubject(String subject) {
         subjects.add(subject);
+    }
+
+    public Set<String> getSubjects() {
+        return subjects;
     }
 
 /*    @OneToMany(mappedBy = "subject", fetch = FetchType.EAGER)

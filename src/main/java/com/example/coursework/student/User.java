@@ -1,5 +1,6 @@
 package com.example.coursework.student;
 
+import com.example.coursework.internships.Internship;
 import com.example.coursework.organizations.Organization;
 import com.example.coursework.reviews.Review;
 import com.example.coursework.security.UserRole;
@@ -105,6 +106,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Review> reviews;
 
+    // @JsonIgnore
+    @ManyToMany(mappedBy = "favourites")
+    public Set<Internship> internships = new HashSet<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -118,14 +123,19 @@ public class User implements UserDetails {
         return Objects.hash(user_id);
     }
 
+    @JsonIgnore
     @Transient
     private Set<? extends GrantedAuthority> grantedAuthorities;
+    @JsonIgnore
     @Transient
     private boolean isAccountNonExpired;
+    @JsonIgnore
     @Transient
     private boolean isAccountNonLocked;
+    @JsonIgnore
     @Transient
     private boolean isCredentialsNonExpired;
+    @JsonIgnore
     @Transient
     private boolean isEnabled;
 
@@ -208,10 +218,6 @@ public class User implements UserDetails {
 
     public LocalDate getDayOfBirth() {
         return dayOfBirth;
-    }
-
-    public void setUser_id(Integer studentId) {
-        this.user_id = studentId;
     }
 
     public void setName(String studentName) {
@@ -307,9 +313,13 @@ public class User implements UserDetails {
         reviews.add(review);
     }
 
+    public void addFavourites(Internship internship) {
+        internships.add(internship);
+    }
+
     @Override
     public String toString() {
-        return "Student [id=" + user_id
+        return "Student id=" + user_id
                 + ", name=" + name
                 + ", email=" + email;
         //  + ", dob=" + dayOfBirth;

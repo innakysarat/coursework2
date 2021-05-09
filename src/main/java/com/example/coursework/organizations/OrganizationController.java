@@ -1,5 +1,6 @@
 package com.example.coursework.organizations;
 
+import com.example.coursework.internships.Internship;
 import com.example.coursework.student.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,11 +15,11 @@ import java.util.Set;
 @RequestMapping("organizations")
 public class OrganizationController {
 
-    private final OrganizaitionService organizaitionService;
+    private final OrganizationService organizationService;
 
     @Autowired
-    public OrganizationController(OrganizaitionService organizaitionService) {
-        this.organizaitionService = organizaitionService;
+    public OrganizationController(OrganizationService organizationService) {
+        this.organizationService = organizationService;
     }
 
     @PostMapping()
@@ -28,7 +29,7 @@ public class OrganizationController {
                 SecurityContextHolder.getContext().getAuthentication();
         String username = authentication == null ? null : (String) authentication.getPrincipal();
         if (username != null) {
-            organizaitionService.addOrganization(username, organization);
+            organizationService.addOrganization(username, organization);
         }// else {
         //     throw new IllegalStateException("User must login");
         //  }
@@ -38,12 +39,12 @@ public class OrganizationController {
     public Organization getOrganization(
             @PathVariable Long organization_id) {
         // username correct & can get &
-        return organizaitionService.getOrganization(organization_id);
+        return organizationService.getOrganization(organization_id);
     }
 
     @GetMapping
     public List<Organization> getOrganizations() {
-        return organizaitionService.getOrganizations();
+        return organizationService.getOrganizations();
     }
 
     @GetMapping(path = "/leaders")
@@ -51,17 +52,17 @@ public class OrganizationController {
     public Set<User> getLeadersOfOrganization(
             @RequestParam("organization") Long organization_id
     ) {
-        return organizaitionService.getLeadersOfOrganization(organization_id);
+        return organizationService.getLeadersOfOrganization(organization_id);
     }
 
-    @PutMapping("/{organization_id}")
+    @PostMapping("/{organization_id}")
     @PreAuthorize("hasAuthority('organization:read')")
     public void addLeadersToOrganization(
             @PathVariable Long organization_id,
             @RequestParam("username") String username
     ) {
-        Organization organization = organizaitionService.getOrganization(organization_id);
-        organizaitionService.addOrganization(username, organization);
+        Organization organization = organizationService.getOrganization(organization_id);
+        organizationService.addOrganization(username, organization);
     }
 
     /*  @PutMapping("/{organization_id}/internships/{internship_id}")
@@ -78,6 +79,14 @@ public class OrganizationController {
      }*/
     @DeleteMapping(path = "/{organization_id}")
     public void deleteOrganization(@PathVariable Long organization_id) {
-    organizaitionService.deleteOrganization(organization_id);
+        organizationService.deleteOrganization(organization_id);
+    }
+
+    @PutMapping(path = "/{organization_id}")
+    @PreAuthorize("hasAuthority('organization:write')")
+    public void updateInternship(@PathVariable Long organization_id,
+                                 @RequestBody Organization organization) {
+        organizationService.updateOrganization(organization_id, organization.getName(), organization.getDescription(),
+                organization.getReference());
     }
 }

@@ -2,6 +2,7 @@ package com.example.coursework.internships;
 
 import com.example.coursework.organizations.Organization;
 import com.example.coursework.reviews.Review;
+import com.example.coursework.student.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -72,12 +73,21 @@ public class Internship {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "organization_id")
     private Organization organization;
+
     public Internship() {
     }
 
     @OneToMany(mappedBy = "internship", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     public Set<Review> reviews = new HashSet<>();
 
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "users_internships",
+            joinColumns = @JoinColumn(name = "internship_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    public Set<User> favourites = new HashSet<>();
 
     public Long getInternship_id() {
         return internship_id;
@@ -135,6 +145,10 @@ public class Internship {
         this.organization = organization;
     }
 
+    public void addUsers(User user) {
+        favourites.add(user);
+    }
+
     public void setChecked(boolean checked) {
         isChecked = checked;
     }
@@ -155,4 +169,27 @@ public class Internship {
         this.finishDate = finishDate;
     }
 
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public void setAge_min(Integer age_min) {
+        this.age_min = age_min;
+    }
+
+    public void setAge_max(Integer age_max) {
+        this.age_max = age_max;
+    }
 }
