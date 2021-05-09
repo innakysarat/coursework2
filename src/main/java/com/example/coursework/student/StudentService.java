@@ -1,5 +1,7 @@
 package com.example.coursework.student;
 
+import com.example.coursework.internships.Internship;
+import com.example.coursework.internships.InternshipRepository;
 import com.example.coursework.security.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,11 +20,13 @@ import java.util.*;
 public class StudentService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final InternshipRepository internshipRepository;
 
     @Autowired
-    public StudentService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public StudentService(UserRepository userRepository, PasswordEncoder passwordEncoder, InternshipRepository internshipRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.internshipRepository = internshipRepository;
     }
 
     public List<User> getUsers() {
@@ -158,7 +162,21 @@ public class StudentService implements UserDetailsService {
                 !Objects.equals(user.getPassword(), password)) {
             user.setPassword(password);
         }
+        userRepository.save(user);
 
+    }
+
+    public void addFavourites(String username, String internship_name) {
+        User user = userRepository.findByUsername(username);
+        Internship internship = internshipRepository.findByName(internship_name);
+        if (user != null && internship != null) {
+            user.addFavourites(internship);
+            userRepository.save(user);
+           // internship.addUsers(user);
+           // internshipRepository.save(internship);
+        } else {
+            throw new IllegalStateException("User/internship is absent");
+        }
     }
 
     @Override

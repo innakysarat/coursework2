@@ -12,10 +12,7 @@ import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity(name = "User")
 @Table(
@@ -108,7 +105,7 @@ public class User implements UserDetails {
 
     // @JsonIgnore
     @ManyToMany(mappedBy = "favourites")
-    public Set<Internship> internships = new HashSet<>();
+    public List<Internship> internships;
 
     @Override
     public boolean equals(Object o) {

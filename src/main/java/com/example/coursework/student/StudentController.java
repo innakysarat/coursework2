@@ -1,5 +1,6 @@
 package com.example.coursework.student;
 
+import com.example.coursework.internships.InternshipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/students")
 public class StudentController {
     private final StudentService studentService;
+    private final InternshipService internshipService;
 
     @Autowired
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, InternshipService internshipService) {
         this.studentService = studentService;
+        this.internshipService = internshipService;
     }
 
     @GetMapping()
@@ -46,5 +49,13 @@ public class StudentController {
                     user_update.getUsername(), user_update.getPassword(),
                     user_update.getDayOfBirth());
         }
+    }
+
+    @PostMapping("/favourites")
+    public void addFavourites(
+            @RequestParam(value = "username") String username,
+            @RequestParam(value = "internship_name") String internship_name
+    ) {
+        studentService.addFavourites(username, internship_name);
     }
 }
