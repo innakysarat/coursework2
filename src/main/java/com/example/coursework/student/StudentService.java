@@ -170,10 +170,10 @@ public class StudentService implements UserDetailsService {
         User user = userRepository.findByUsername(username);
         Internship internship = internshipRepository.findByName(internship_name);
         if (user != null && internship != null) {
-            user.addFavourites(internship);
-            userRepository.save(user);
-           // internship.addUsers(user);
-           // internshipRepository.save(internship);
+            // user.addFavourites(internship);
+            internship.addUsers(user);
+            // userRepository.save(user);
+            // internshipRepository.save(internship);
         } else {
             throw new IllegalStateException("User/internship is absent");
         }
@@ -211,5 +211,14 @@ public class StudentService implements UserDetailsService {
         }
         String password = passwordEncoder.encode(user.getPassword());
         return new org.springframework.security.core.userdetails.User(user.getUsername(), password, grantedAuthorities);
+    }
+
+    public Set<Internship> getFavourites(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            return user.getInternships();
+        } else {
+            throw new IllegalStateException("User doesn't exist");
+        }
     }
 }

@@ -103,9 +103,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Review> reviews;
 
-    // @JsonIgnore
+    @JsonIgnore
     @ManyToMany(mappedBy = "favourites")
-    public List<Internship> internships;
+    public Set<Internship> internships = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
@@ -312,6 +312,10 @@ public class User implements UserDetails {
 
     public void addFavourites(Internship internship) {
         internships.add(internship);
+    }
+
+    public Set<Internship> getInternships() {
+        return internships;
     }
 
     @Override

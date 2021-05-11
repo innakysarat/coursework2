@@ -150,10 +150,30 @@ public class InternshipService {
         User user = userRepository.findByUsername(username);
         Internship internship = internshipRepository.findByName(internship_name);
         if (user != null && internship != null) {
-            user.addFavourites(internship);
+            internship.addUsers(user);
             userRepository.save(user);
-            // internship.addUsers(user);
-            // internshipRepository.save(internship);
+            internshipRepository.save(internship);
+        } else {
+            throw new IllegalStateException("User/internship is absent");
+        }
+    }
+
+    public Set<User> getUsersFavourites(String internship_name) {
+        Internship internship = internshipRepository.findByName(internship_name);
+        if (internship != null) {
+            return internship.getFavourites();
+        } else {
+            throw new IllegalStateException("Internship doesn't exist");
+        }
+    }
+
+    public void deleteFavourites(String username, String internship_name) {
+        User user = userRepository.findByUsername(username);
+        Internship internship = internshipRepository.findByName(internship_name);
+        if (user != null && internship != null) {
+            internship.removeUser(user);
+            userRepository.save(user);
+            internshipRepository.save(internship);
         } else {
             throw new IllegalStateException("User/internship is absent");
         }

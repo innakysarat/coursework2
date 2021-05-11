@@ -80,8 +80,11 @@ public class Internship {
     @OneToMany(mappedBy = "internship", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     public Set<Review> reviews = new HashSet<>();
 
-    @JsonIgnore
-    @ManyToMany
+   // @JsonIgnore
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinTable(
             name = "users_internships",
             joinColumns = @JoinColumn(name = "internship_id"),
@@ -147,6 +150,16 @@ public class Internship {
 
     public void addUsers(User user) {
         favourites.add(user);
+        user.getInternships().add(this);
+    }
+
+    public void removeUser(User user) {
+        favourites.remove(user);
+        user.getInternships().remove(this);
+    }
+
+    public Set<User> getFavourites() {
+        return favourites;
     }
 
     public void setChecked(boolean checked) {

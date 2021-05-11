@@ -1,6 +1,7 @@
 package com.example.coursework.internships;
 
 import com.example.coursework.options.*;
+import com.example.coursework.student.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -109,9 +110,23 @@ public class InternshipController {
 
     @PostMapping("/favourites")
     public void addFavourites(
-            @RequestParam(value="username") String username,
+            @RequestParam(value = "username") String username,
             @RequestParam(value = "internship_name") String internship_name
     ) {
         internshipService.addFavourites(username, internship_name);
+    }
+    @DeleteMapping("/favourites")
+    public void deleteFavourites(
+            @RequestParam(value = "username") String username,
+            @RequestParam(value = "internship_name") String internship_name
+    ){
+        internshipService.deleteFavourites(username, internship_name);
+    }
+
+    @GetMapping("/favourites")
+    public Set<User> getUsersFavourites(
+            @RequestParam(value = "internship_name") String internship_name
+    ) {
+        return internshipService.getUsersFavourites(internship_name);
     }
 }

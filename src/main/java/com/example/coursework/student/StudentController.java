@@ -1,10 +1,13 @@
 package com.example.coursework.student;
 
+import com.example.coursework.internships.Internship;
 import com.example.coursework.internships.InternshipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/students")
@@ -51,11 +54,11 @@ public class StudentController {
         }
     }
 
-    @PostMapping("/favourites")
-    public void addFavourites(
-            @RequestParam(value = "username") String username,
-            @RequestParam(value = "internship_name") String internship_name
-    ) {
-        studentService.addFavourites(username, internship_name);
+    @GetMapping("/favourites")
+    public Set<Internship> getFavourites(
+            @RequestParam(value = "username") String username
+    )
+    {
+        return studentService.getFavourites(username);
     }
 }
