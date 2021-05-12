@@ -18,12 +18,6 @@ public class PriceDao {
         prices.add(price);
     }
 
-    /*    @OneToMany(mappedBy = "price", fetch = FetchType.EAGER)
-        private Set<Internship> internships = new HashSet<>();
-        public void addInternship(Internship internship){
-            internships.add(internship);
-        }*/
-
     public Set<Integer> getPrices() {
         return prices;
     }

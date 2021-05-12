@@ -87,6 +87,11 @@ public class User implements UserDetails {
             columnDefinition = "TEXT"
     )
     private String phone;
+    @Column(
+            name = "image",
+            columnDefinition = "TEXT"
+    )
+    private String userImageLink;
 
     public User() {
         grantedAuthorities = UserRole.STUDENT.getGrantedAuthorities();
@@ -97,23 +102,24 @@ public class User implements UserDetails {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "leaders")
-    private Set<Organization> organizations;
+    private final Set<Organization> organizations = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Review> reviews;
+    private final Set<Review> reviews = new HashSet<>();
 
     @JsonIgnore
     @ManyToMany(mappedBy = "favourites")
-    public Set<Internship> internships = new HashSet<>();
+    private final Set<Internship> internships = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return user_id.equals(user.user_id);
+        return Objects.equals(user_id, user.user_id);
     }
+
 
     @Override
     public int hashCode() {
@@ -177,20 +183,20 @@ public class User implements UserDetails {
         return user_id;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public String getName() {
         return name;
     }
 
     public String getRole() {
         return role;
-    }
-
-    public void setGrantedAuthorities(Set<? extends GrantedAuthority> grantedAuthorities) {
-        this.grantedAuthorities = grantedAuthorities;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public String getSurname() {
@@ -215,6 +221,10 @@ public class User implements UserDetails {
 
     public LocalDate getDayOfBirth() {
         return dayOfBirth;
+    }
+
+    public Optional<String> getUserImageLink() {
+        return Optional.ofNullable(userImageLink);
     }
 
     public void setName(String studentName) {
@@ -245,9 +255,18 @@ public class User implements UserDetails {
         this.phone = phone;
     }
 
-    public String getUsername() {
-        return username;
+    public void setUserImageLink(String userImageLink) {
+        this.userImageLink = userImageLink;
     }
+
+    public void setGrantedAuthorities(Set<? extends GrantedAuthority> grantedAuthorities) {
+        this.grantedAuthorities = grantedAuthorities;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
 
     @Override
     public boolean isAccountNonExpired() {
@@ -282,9 +301,6 @@ public class User implements UserDetails {
         }
     }
 
-    public String getPassword() {
-        return password;
-    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -308,10 +324,6 @@ public class User implements UserDetails {
 
     public void addReview(Review review) {
         reviews.add(review);
-    }
-
-    public void addFavourites(Internship internship) {
-        internships.add(internship);
     }
 
     public Set<Internship> getInternships() {

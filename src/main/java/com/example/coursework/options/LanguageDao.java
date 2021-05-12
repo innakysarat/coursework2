@@ -1,9 +1,6 @@
 package com.example.coursework.options;
 
 import org.springframework.stereotype.Component;
-import sun.awt.image.ImageWatched;
-
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 

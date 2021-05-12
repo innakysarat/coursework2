@@ -1,5 +1,7 @@
 package com.example.coursework.student;
 
+import com.example.coursework.bucket.BucketName;
+import com.example.coursework.filestore.FileStore;
 import com.example.coursework.internships.Internship;
 import com.example.coursework.internships.InternshipRepository;
 import com.example.coursework.security.UserRole;
@@ -11,22 +13,28 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
+
+import static org.apache.http.entity.ContentType.*;
 
 @Service
 public class StudentService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final InternshipRepository internshipRepository;
+    private final FileStore fileStore;
 
     @Autowired
-    public StudentService(UserRepository userRepository, PasswordEncoder passwordEncoder, InternshipRepository internshipRepository) {
+    public StudentService(UserRepository userRepository, PasswordEncoder passwordEncoder, InternshipRepository internshipRepository, FileStore fileStore) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.internshipRepository = internshipRepository;
+        this.fileStore = fileStore;
     }
 
     public List<User> getUsers() {
@@ -163,7 +171,6 @@ public class StudentService implements UserDetailsService {
             user.setPassword(password);
         }
         userRepository.save(user);
-
     }
 
     public void addFavourites(String username, String internship_name) {
@@ -175,7 +182,7 @@ public class StudentService implements UserDetailsService {
             // userRepository.save(user);
             // internshipRepository.save(internship);
         } else {
-            throw new IllegalStateException("User/internship is absent");
+            throw new IllegalStateException("User/internship not found");
         }
     }
 
@@ -219,6 +226,75 @@ public class StudentService implements UserDetailsService {
             return user.getInternships();
         } else {
             throw new IllegalStateException("User doesn't exist");
+        }
+    }
+
+    public void uploadUserImage(Integer user_id, MultipartFile file) {
+        // 1. Check if image is not empty
+        isFileEmpty(file);
+        // 2. If file is an image
+        isImage(file);
+
+        // 3. The user exists in our database
+        Optional<User> optionalUser = userRepository.findById(user_id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            // 4. Grab some metadata from file if any
+            Map<String, String> metadata = extractMetadata(file);
+
+            // 5. Store the image in s3 and update database (userImageLink) with s3 image link
+            String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), user.getUser_id());
+            String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
+
+            try {
+                fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
+                user.setUserImageLink(filename);
+                userRepository.save(user);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        } else {
+            throw new IllegalStateException("User not found");
+        }
+    }
+
+    byte[] downloadUserImage(Integer user_id) {
+        Optional<User> optionalUser = userRepository.findById(user_id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            String path = String.format("%s/%s",
+                    BucketName.PROFILE_IMAGE.getBucketName(),
+                    user.getUser_id());
+            return user.getUserImageLink()
+                    .map(key -> fileStore.download(path, key))
+                    .orElse(new byte[0]);
+        } else {
+            throw new IllegalStateException("Failed to download image");
+        }
+
+    }
+
+    private Map<String, String> extractMetadata(MultipartFile file) {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("Content-Type", file.getContentType());
+        metadata.put("Content-Length", String.valueOf(file.getSize()));
+        return metadata;
+    }
+
+    private void isImage(MultipartFile file) {
+        if (!Arrays.asList(
+                IMAGE_JPEG.getMimeType(),
+                IMAGE_PNG.getMimeType(),
+                IMAGE_GIF.getMimeType()).contains(file.getContentType())) {
+            throw new IllegalStateException("File must be an image [" + file.getContentType() + "]");
+        }
+    }
+
+    private void isFileEmpty(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new IllegalStateException("Cannot upload empty file [ " + file.getSize() + "]");
         }
     }
 }

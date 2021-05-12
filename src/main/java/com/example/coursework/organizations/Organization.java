@@ -33,15 +33,18 @@ public class Organization {
             columnDefinition = "TEXT"
     )
     private String reference;
-    @ManyToMany
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinTable(
             name = "leaders_organizations",
             joinColumns = @JoinColumn(name = "organization_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private final Set<User> leaders = new HashSet<>();
-    public Organization(){
 
+    public Organization() {
     }
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
@@ -64,7 +67,13 @@ public class Organization {
     }
 
     public void addLeader(User user) {
-        this.leaders.add(user);
+        leaders.add(user);
+        user.getOrganizations().add(this);
+    }
+
+    public void removeLeader(User user) {
+        leaders.remove(user);
+        user.getOrganizations().remove(this);
     }
 
     public Set<User> getLeaders() {

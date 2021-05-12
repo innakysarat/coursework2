@@ -56,13 +56,22 @@ public class OrganizationController {
     }
 
     @PostMapping("/{organization_id}")
-    @PreAuthorize("hasAuthority('organization:read')")
+    @PreAuthorize("hasAuthority('organization:write')")
     public void addLeadersToOrganization(
             @PathVariable Long organization_id,
             @RequestParam("username") String username
     ) {
         Organization organization = organizationService.getOrganization(organization_id);
         organizationService.addOrganization(username, organization);
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasAuthority('organization:write')")
+    public void removeLeaderFromOrganization(
+            @RequestParam(value = "username") String username,
+            @RequestParam("organization_name") String organization_name
+    ) {
+        organizationService.deleteLeader(username, organization_name);
     }
 
     /*  @PutMapping("/{organization_id}/internships/{internship_id}")

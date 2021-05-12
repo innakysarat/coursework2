@@ -3,9 +3,11 @@ package com.example.coursework.student;
 import com.example.coursework.internships.Internship;
 import com.example.coursework.internships.InternshipService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
@@ -57,8 +59,22 @@ public class StudentController {
     @GetMapping("/favourites")
     public Set<Internship> getFavourites(
             @RequestParam(value = "username") String username
-    )
-    {
+    ) {
         return studentService.getFavourites(username);
+    }
+
+    @PostMapping(
+            path = "{user_id}/image",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public void uploadUserImage(@PathVariable("user_id") Integer user_id,
+                                @RequestParam("file") MultipartFile file) {
+        studentService.uploadUserImage(user_id, file);
+    }
+
+    @GetMapping(path = "{user_id}/image")
+    public byte[] downloadUserImage(@PathVariable("user_id") Integer user_id) {
+        return studentService.downloadUserImage(user_id);
     }
 }
