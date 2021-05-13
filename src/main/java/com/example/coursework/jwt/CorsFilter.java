@@ -19,10 +19,10 @@ public class CorsFilter extends OncePerRequestFilter {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         response.setHeader("Access-Control-Max-Age", "3600");
-        //  "authorization, content-type, xsrf-token"
-        response.setHeader("Access-Control-Allow-Headers", "Authorization, xsrf-token, Origin, X-Requested-With, Content-Type, Accept");
-        response.addHeader("Access-Control-Expose-Headers", "xsrf-token");
-     //   response.setHeader("Access-Control-Allow-Credentials", "true");
+        // "authorization, content-type, xsrf-token"
+        response.setHeader("Access-Control-Allow-Headers", "Authorization, XSRF-Token, Origin, X-Requested-With, Content-Type, Accept");
+        response.addHeader("Access-Control-Expose-Headers", "XSRF-Token");
+        response.addHeader("Access-Control-Allow-Credentials", "true");
         if ("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
@@ -30,6 +30,5 @@ public class CorsFilter extends OncePerRequestFilter {
         }
         //filterChain.doFilter(request, response);
     }
-
 
 }
