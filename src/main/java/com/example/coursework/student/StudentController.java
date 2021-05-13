@@ -37,7 +37,7 @@ public class StudentController {
         }
         return user;
     }
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping
     public void registerNewStudent(@RequestBody User user) {
         studentService.addUser(user);
