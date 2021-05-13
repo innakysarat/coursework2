@@ -9,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -126,19 +125,14 @@ public class User implements UserDetails {
         return Objects.hash(user_id);
     }
 
-    @JsonIgnore
     @Transient
     private Set<? extends GrantedAuthority> grantedAuthorities;
-    @JsonIgnore
     @Transient
     private boolean isAccountNonExpired;
-    @JsonIgnore
     @Transient
     private boolean isAccountNonLocked;
-    @JsonIgnore
     @Transient
     private boolean isCredentialsNonExpired;
-    @JsonIgnore
     @Transient
     private boolean isEnabled;
 
@@ -267,28 +261,31 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -332,7 +329,7 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        return "Student id=" + user_id
+        return "User id=" + user_id
                 + ", name=" + name
                 + ", email=" + email;
         //  + ", dob=" + dayOfBirth;

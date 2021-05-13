@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -33,6 +34,11 @@ public class Organization {
             columnDefinition = "TEXT"
     )
     private String reference;
+    @Column(
+            name = "image",
+            columnDefinition = "TEXT"
+    )
+    private String organizationImageLink;
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
@@ -64,6 +70,10 @@ public class Organization {
 
     public String getReference() {
         return reference;
+    }
+
+    public Optional<String> getOrganizationImageLink() {
+        return Optional.ofNullable(organizationImageLink);
     }
 
     public void addLeader(User user) {
@@ -98,5 +108,9 @@ public class Organization {
 
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    public void setOrganizationImageLink(String organizationImageLink) {
+        this.organizationImageLink = organizationImageLink;
     }
 }

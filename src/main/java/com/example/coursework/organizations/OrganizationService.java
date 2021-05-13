@@ -1,23 +1,32 @@
 package com.example.coursework.organizations;
 
+import com.example.coursework.bucket.BucketName;
+import com.example.coursework.filestore.FileStore;
+import com.example.coursework.images.ImageService;
 import com.example.coursework.internships.Internship;
 import com.example.coursework.student.User;
 import com.example.coursework.student.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.*;
 
 @Service
 public class OrganizationService {
     private final OrganizationRepository organizationRepository;
     private final UserRepository userRepository;
+    private final ImageService imageService;
+    private final FileStore fileStore;
 
     @Autowired
-    public OrganizationService(OrganizationRepository organizationRepository, UserRepository userRepository) {
+    public OrganizationService(OrganizationRepository organizationRepository, UserRepository userRepository, ImageService imageService, FileStore fileStore) {
         this.organizationRepository = organizationRepository;
         this.userRepository = userRepository;
+        this.imageService = imageService;
+        this.fileStore = fileStore;
     }
 
     public void addOrganization(String username, Organization organization) {
@@ -97,6 +106,69 @@ public class OrganizationService {
                 organization.setReference(reference);
             }
             organizationRepository.save(organization);
+        }
+    }
+
+    public void uploadOrganizationImage(Long organization_id, MultipartFile file) {
+        imageService.isFileEmpty(file);
+        imageService.isImage(file);
+
+        Optional<Organization> optionalOrganization = organizationRepository.findById(organization_id);
+        if (optionalOrganization.isPresent()) {
+            Organization organization = optionalOrganization.get();
+            Map<String, String> metadata = imageService.extractMetadata(file);
+
+            String path = String.format("%s/%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), "organization", organization.getOrganization_id());
+            String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
+
+            try {
+                fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
+                organization.setOrganizationImageLink(filename);
+                organizationRepository.save(organization);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        } else {
+            throw new IllegalStateException("Organization not found");
+        }
+
+    }
+
+    public byte[] downloadOrganizationImage(Long organization_id) {
+        Optional<Organization> optionalOrganization = organizationRepository.findById(organization_id);
+        if (optionalOrganization.isPresent()) {
+            Organization organization = optionalOrganization.get();
+            String path = String.format("%s/%s/%s",
+                    BucketName.PROFILE_IMAGE.getBucketName(),
+                    "organization",
+                    organization.getOrganization_id());
+            return organization.getOrganizationImageLink()
+                    .map(key -> fileStore.download(path, key))
+                    .orElse(new byte[0]);
+        } else {
+            throw new IllegalStateException("Failed to download organization image");
+        }
+    }
+
+    public void deleteImage(Long organization_id) {
+        Optional<Organization> optionalOrganization = organizationRepository.findById(organization_id);
+        if (optionalOrganization.isPresent()) {
+            Organization organization = optionalOrganization.get();
+            String path = String.format("%s/%s/%s",
+                    BucketName.PROFILE_IMAGE.getBucketName(),
+                    "organization",
+                    organization.getOrganization_id());
+            Optional<String> filename = organization.getOrganizationImageLink();
+            if (filename.isPresent()) {
+                String image_filename = filename.get();
+                fileStore.deleteFile(path, image_filename);
+                organization.setOrganizationImageLink(null);
+                organizationRepository.save(organization);
+            } else {
+                throw new IllegalStateException("Image not found");
+            }
+        } else {
+            throw new IllegalStateException("Failed to delete organization image");
         }
     }
 }

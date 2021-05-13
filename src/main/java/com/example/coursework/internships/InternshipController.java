@@ -4,8 +4,10 @@ import com.example.coursework.options.*;
 import com.example.coursework.student.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -17,19 +19,12 @@ import java.util.regex.Pattern;
 public class InternshipController {
     private final InternshipService internshipService;
     private final InternshipRepository internshipRepository;
-    private final SubjectDao subjectDao;
-    private final LanguageDao languageDao;
-    private final PriceDao priceDao;
-    private final CountryDao countryDao;
 
     @Autowired
-    public InternshipController(InternshipService internshipService, InternshipRepository internshipRepository, SubjectDao subjectDao, LanguageDao languageDao, PriceDao priceDao, CountryDao countryDao) {
+    public InternshipController(InternshipService internshipService,
+                                InternshipRepository internshipRepository) {
         this.internshipService = internshipService;
         this.internshipRepository = internshipRepository;
-        this.subjectDao = subjectDao;
-        this.languageDao = languageDao;
-        this.priceDao = priceDao;
-        this.countryDao = countryDao;
     }
 
     @PostMapping()
@@ -66,6 +61,7 @@ public class InternshipController {
     }
 
     @DeleteMapping(path = "/{internship_id}")
+    @PreAuthorize("hasAuthority('course:write')")
     public void deleteInternship(@PathVariable Long internship_id) {
         internshipService.deleteInternship(internship_id);
     }
@@ -115,11 +111,12 @@ public class InternshipController {
     ) {
         internshipService.addFavourites(username, internship_name);
     }
+
     @DeleteMapping("/favourites")
     public void deleteFavourites(
             @RequestParam(value = "username") String username,
             @RequestParam(value = "internship_name") String internship_name
-    ){
+    ) {
         internshipService.deleteFavourites(username, internship_name);
     }
 
@@ -128,5 +125,27 @@ public class InternshipController {
             @RequestParam(value = "internship_name") String internship_name
     ) {
         return internshipService.getUsersFavourites(internship_name);
+    }
+
+    @PostMapping(
+            path = "{internship_id}/image",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAuthority('course:write')")
+    public void uploadInternshipImage(@PathVariable("internship_id") Long internship_id,
+                                      @RequestParam("image") MultipartFile file) {
+        internshipService.uploadInternshipImage(internship_id, file);
+    }
+
+    @GetMapping(path = "{internship_id}/image")
+    public byte[] downloadInternshipImage(@PathVariable("internship_id") Long internship_id) {
+        return internshipService.downloadInternshipImage(internship_id);
+    }
+
+    @DeleteMapping(path = "/{internship_id}/image")
+    @PreAuthorize("hasAuthority('course:write')")
+    public void deleteFile(@PathVariable Long internship_id) {
+        internshipService.deleteImage(internship_id);
     }
 }

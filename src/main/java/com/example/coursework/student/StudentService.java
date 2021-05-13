@@ -2,6 +2,7 @@ package com.example.coursework.student;
 
 import com.example.coursework.bucket.BucketName;
 import com.example.coursework.filestore.FileStore;
+import com.example.coursework.images.ImageService;
 import com.example.coursework.internships.Internship;
 import com.example.coursework.internships.InternshipRepository;
 import com.example.coursework.security.UserRole;
@@ -20,21 +21,25 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
-import static org.apache.http.entity.ContentType.*;
-
 @Service
 public class StudentService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final InternshipRepository internshipRepository;
     private final FileStore fileStore;
+    private final ImageService imageService;
 
     @Autowired
-    public StudentService(UserRepository userRepository, PasswordEncoder passwordEncoder, InternshipRepository internshipRepository, FileStore fileStore) {
+    public StudentService(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder,
+                          InternshipRepository internshipRepository,
+                          FileStore fileStore,
+                          ImageService imageService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.internshipRepository = internshipRepository;
         this.fileStore = fileStore;
+        this.imageService = imageService;
     }
 
     public List<User> getUsers() {
@@ -46,7 +51,7 @@ public class StudentService implements UserDetailsService {
         if (user != null) {
             return user;
         } else {
-            throw new IllegalStateException("User doesn't exist");
+            throw new IllegalStateException("User not found");
         }
     }
 
@@ -191,13 +196,6 @@ public class StudentService implements UserDetailsService {
 
         User user = userRepository.findByUsername(username);
         String role = user.getRole();
-       /* if (username.endsWith("admin")) {
-            role = "ADMIN";
-        } else if (username.endsWith("leader")) {
-            role = "LEADER";
-        } else {
-            role = "STUDENT";
-        }*/
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
         if (role.equals("ADMIN")) {
@@ -231,9 +229,9 @@ public class StudentService implements UserDetailsService {
 
     public void uploadUserImage(Integer user_id, MultipartFile file) {
         // 1. Check if image is not empty
-        isFileEmpty(file);
+        imageService.isFileEmpty(file);
         // 2. If file is an image
-        isImage(file);
+        imageService.isImage(file);
 
         // 3. The user exists in our database
         Optional<User> optionalUser = userRepository.findById(user_id);
@@ -241,10 +239,10 @@ public class StudentService implements UserDetailsService {
             User user = optionalUser.get();
 
             // 4. Grab some metadata from file if any
-            Map<String, String> metadata = extractMetadata(file);
+            Map<String, String> metadata = imageService.extractMetadata(file);
 
             // 5. Store the image in s3 and update database (userImageLink) with s3 image link
-            String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), user.getUser_id());
+            String path = String.format("%s/%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), "users", user.getUser_id());
             String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
 
             try {
@@ -263,38 +261,39 @@ public class StudentService implements UserDetailsService {
         Optional<User> optionalUser = userRepository.findById(user_id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-
-            String path = String.format("%s/%s",
+            String path = String.format("%s/%s/%s",
                     BucketName.PROFILE_IMAGE.getBucketName(),
+                    "users",
                     user.getUser_id());
             return user.getUserImageLink()
                     .map(key -> fileStore.download(path, key))
                     .orElse(new byte[0]);
         } else {
-            throw new IllegalStateException("Failed to download image");
+            throw new IllegalStateException("Failed to download user image");
         }
 
     }
 
-    private Map<String, String> extractMetadata(MultipartFile file) {
-        Map<String, String> metadata = new HashMap<>();
-        metadata.put("Content-Type", file.getContentType());
-        metadata.put("Content-Length", String.valueOf(file.getSize()));
-        return metadata;
-    }
+    public void deleteImage(Integer user_id) {
+        Optional<User> optionalUser = userRepository.findById(user_id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            String path = String.format("%s/%s/%s",
+                    BucketName.PROFILE_IMAGE.getBucketName(),
+                    "users",
+                    user.getUser_id());
+            Optional<String> filename = user.getUserImageLink();
+            if (filename.isPresent()) {
+                String image_filename = filename.get();
+                fileStore.deleteFile(path, image_filename);
+                user.setUserImageLink(null);
+                userRepository.save(user);
+            } else {
+                throw new IllegalStateException("Image not found");
+            }
 
-    private void isImage(MultipartFile file) {
-        if (!Arrays.asList(
-                IMAGE_JPEG.getMimeType(),
-                IMAGE_PNG.getMimeType(),
-                IMAGE_GIF.getMimeType()).contains(file.getContentType())) {
-            throw new IllegalStateException("File must be an image [" + file.getContentType() + "]");
-        }
-    }
-
-    private void isFileEmpty(MultipartFile file) {
-        if (file.isEmpty()) {
-            throw new IllegalStateException("Cannot upload empty file [ " + file.getSize() + "]");
+        } else {
+            throw new IllegalStateException("Failed to delete user image");
         }
     }
 }

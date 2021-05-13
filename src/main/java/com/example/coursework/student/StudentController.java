@@ -32,7 +32,7 @@ public class StudentController {
         if (username != null) {
             user = studentService.getUser(username);
         } else {
-            throw new IllegalStateException("User is not found");
+            throw new IllegalStateException("User not found");
         }
         return user;
     }
@@ -76,5 +76,9 @@ public class StudentController {
     @GetMapping(path = "{user_id}/image")
     public byte[] downloadUserImage(@PathVariable("user_id") Integer user_id) {
         return studentService.downloadUserImage(user_id);
+    }
+    @DeleteMapping(path = "/{user_id}/image")
+    public void deleteFile(@PathVariable Integer user_id) {
+        studentService.deleteImage(user_id);
     }
 }

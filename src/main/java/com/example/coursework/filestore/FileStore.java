@@ -3,6 +3,7 @@ package com.example.coursework.filestore;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.SdkClientException;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -14,8 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
-import javax.imageio.IIOException;
-import java.util.function.Supplier;
 
 @Service
 public class FileStore {
@@ -48,9 +47,16 @@ public class FileStore {
         try {
             S3Object s3Object = s3.getObject(path, key);
             S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
-            return IOUtils.toByteArray(s3ObjectInputStream);
+            byte[] content = IOUtils.toByteArray(s3ObjectInputStream);
+            s3Object.close();
+            return content;
         } catch (AmazonServiceException | IOException ex) {
             throw new IllegalStateException("Failed to download file to s3", ex);
         }
+    }
+
+    public void deleteFile(String path, String key) {
+        final DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(path, key);
+        s3.deleteObject(deleteObjectRequest);
     }
 }

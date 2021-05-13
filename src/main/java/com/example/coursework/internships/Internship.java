@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -68,6 +69,11 @@ public class Internship {
             name = "is_checked"
     )
     private boolean isChecked;
+    @Column(
+            name = "image",
+            columnDefinition = "TEXT"
+    )
+    private String internshipImageLink;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
@@ -140,6 +146,10 @@ public class Internship {
         return price;
     }
 
+    public Optional<String> getInternshipImageLink() {
+        return Optional.ofNullable(internshipImageLink);
+    }
+
     public void addReview(Review review) {
         reviews.add(review);
     }
@@ -196,6 +206,10 @@ public class Internship {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public void setInternshipImageLink(String internshipImageLink) {
+        this.internshipImageLink = internshipImageLink;
     }
 
     public void setAge_min(Integer age_min) {

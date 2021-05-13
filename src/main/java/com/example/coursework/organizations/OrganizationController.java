@@ -3,10 +3,12 @@ package com.example.coursework.organizations;
 import com.example.coursework.internships.Internship;
 import com.example.coursework.student.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -97,5 +99,26 @@ public class OrganizationController {
                                  @RequestBody Organization organization) {
         organizationService.updateOrganization(organization_id, organization.getName(), organization.getDescription(),
                 organization.getReference());
+    }
+    @PostMapping(
+            path = "{organization_id}/image",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAuthority('organization:write')")
+    public void uploadOrganizationImage(@PathVariable("organization_id") Long organization_id,
+                                        @RequestParam("image") MultipartFile file) {
+        organizationService.uploadOrganizationImage(organization_id, file);
+    }
+
+    @GetMapping(path = "{organization_id}/image")
+    public byte[] downloadOrganizationImage(@PathVariable("organization_id") Long organization_id) {
+        return organizationService.downloadOrganizationImage(organization_id);
+    }
+
+    @DeleteMapping(path = "/{organization_id}/image")
+    @PreAuthorize("hasAuthority('organization:write')")
+    public void deleteFile(@PathVariable Long organization_id) {
+        organizationService.deleteImage(organization_id);
     }
 }
