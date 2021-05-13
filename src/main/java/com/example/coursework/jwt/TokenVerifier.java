@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 // 1 раз на каждый запрос используем данный фильтр
 //
-@Component
 public class TokenVerifier extends OncePerRequestFilter {
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
