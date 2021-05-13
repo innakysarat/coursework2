@@ -1,6 +1,7 @@
 package com.example.coursework.security;
 
 //import com.example.coursework.jwt.CorsFilter;
+
 import com.example.coursework.jwt.JwtConfig;
 import com.example.coursework.jwt.TokenVerifier;
 import com.example.coursework.jwt.UsernameAndPasswordAuthFilter;
@@ -48,46 +49,46 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.jwtConfig = jwtConfig;
     }
 
- /*   @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    /*   @Bean
+       CorsConfigurationSource corsConfigurationSource() {
+           CorsConfiguration configuration = new CorsConfiguration();
+           configuration.setAllowedOrigins(Arrays.asList("*"));
+           configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+           configuration.setAllowCredentials(true);
+           //the below three lines will add the relevant CORS response headers
+           configuration.addAllowedOrigin("*");
+           configuration.addAllowedHeader("*");
+           configuration.addAllowedMethod("*");
+           UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+           source.registerCorsConfiguration("/**", configuration);
+           return source;
+       }*/
+    //}
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
-        configuration.setAllowCredentials(true);
-        //the below three lines will add the relevant CORS response headers
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }*/
-    //}
- @Bean
- public CorsConfigurationSource corsConfigurationSource() {
-     CorsConfiguration configuration = new CorsConfiguration();
-     configuration.setAllowedOrigins(Arrays.asList("*"));
-     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-     configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-     configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
-     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-     source.registerCorsConfiguration("/**", configuration);
-     return source;
- }
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and()
+              //  .cors()
+               // .and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-               // .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
+                //.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .addFilter(new UsernameAndPasswordAuthFilter(authenticationManager(), jwtConfig, secretKey))
                 .addFilterAfter(new TokenVerifier(secretKey, jwtConfig), UsernameAndPasswordAuthFilter.class)
-              //  .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
+                //  .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .authorizeRequests()
                 .antMatchers("/**", "/api/students", "/internships", "index", "/css/*", "/js/*").permitAll()
                 .anyRequest()
