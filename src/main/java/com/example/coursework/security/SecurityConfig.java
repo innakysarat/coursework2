@@ -1,5 +1,6 @@
 package com.example.coursework.security;
 
+import com.example.coursework.jwt.CorsFilter;
 import com.example.coursework.jwt.JwtConfig;
 import com.example.coursework.jwt.TokenVerifier;
 import com.example.coursework.jwt.UsernameAndPasswordAuthFilter;
@@ -16,20 +17,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 
 import javax.crypto.SecretKey;
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableConfigurationProperties({JwtConfig.class})
+
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
@@ -48,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.jwtConfig = jwtConfig;
     }
 
-    @Bean
+ /*   @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
@@ -61,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
+    }*/
 
 
   /*  @Bean
@@ -86,14 +82,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-             //   .cors().and()
+                //.cors().and()
                 .csrf().disable()
-                //  .cors().configurationSource(corsConfigurationSource())
+                //.cors().configurationSource(corsConfigurationSource())
                 //.and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 // .addFilter(new UsernamePasswordAuthenticationFilter(authenticationManager()))
+                .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .addFilter(new UsernameAndPasswordAuthFilter(authenticationManager(), jwtConfig, secretKey))
                 .addFilterAfter(new TokenVerifier(secretKey, jwtConfig), UsernameAndPasswordAuthFilter.class)
                 .authorizeRequests()

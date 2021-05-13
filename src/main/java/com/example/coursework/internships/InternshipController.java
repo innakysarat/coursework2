@@ -34,6 +34,7 @@ public class InternshipController {
         internshipService.addInternship(organization_id, internship);
     }
 
+    @CrossOrigin
     @GetMapping
     public List<Internship> getInternships() {
         return internshipService.getInternships();
