@@ -63,17 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return source;
     }
 
-    /*    @Bean
-        public WebMvcConfigurer corsConfigurer() {
-            return new WebMvcConfigurer() {
-                @Override
-                public void addCorsMappings(CorsRegistry registry) {
-                    // This wildcard pattern matches any host from domain.com and url patterns like "https:microservice.division.domain.com/version1/some_endpoint"
-                    registry.addMapping("/**").allowedMethods("*").allowedOriginPatterns("https://*");
-                }
-            };
-        }*/
-    @Bean
+
+  /*  @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
@@ -81,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 registry.addMapping("/**").allowedMethods("*").allowedOrigins("http://localhost:3000");
             }
         };
-    }
+    }*/
    /* @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -95,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().and()
+             //   .cors().and()
                 .csrf().disable()
                 //  .cors().configurationSource(corsConfigurationSource())
                 //.and()
