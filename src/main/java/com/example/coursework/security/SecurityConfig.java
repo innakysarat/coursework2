@@ -82,43 +82,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-    /* @Override
-     protected void configure(HttpSecurity http) throws Exception {
-         http
-                 *//* .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                 .and()*//* // logout - post!
-                .csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                // можем взять метод authManager(), тк наследуемся от WebSecConfigAdapter
-                // в котором такой метод есть
-                .addFilter(new UsernameAndPasswordAuthFilter(authenticationManager()))
-                .authorizeRequests()
-                .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
-                .antMatchers("/api/**").hasRole(UserRole.STUDENT.name())
-                .anyRequest()
-                .authenticated();
-               *//* .and()
-                .formLogin()
-                .loginPage("/login").permitAll()
-                .defaultSuccessUrl("/courses", true)
-                .and()
-                .rememberMe()
-                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21)).key("secret")
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // delete when csrf enable
-                .clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/login");*//*
-    }*/
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-             //   .cors().and()
+                .cors().and()
                 .csrf().disable()
                 //  .cors().configurationSource(corsConfigurationSource())
                 //.and()

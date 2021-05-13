@@ -24,6 +24,7 @@ public class StudentController {
         this.internshipService = internshipService;
     }
 
+    @CrossOrigin
     @GetMapping
     public User getInfoAboutMyself() {
         Authentication authentication =
@@ -58,6 +59,7 @@ public class StudentController {
         }
     }
 
+    @CrossOrigin
     @GetMapping("/favourites")
     public Set<Internship> getFavourites(
             @RequestParam(value = "username") String username
@@ -65,6 +67,7 @@ public class StudentController {
         return studentService.getFavourites(username);
     }
 
+    @CrossOrigin
     @PostMapping(
             path = "/{user_id}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -75,10 +78,13 @@ public class StudentController {
         studentService.uploadUserImage(user_id, file);
     }
 
+    @CrossOrigin
     @GetMapping(path = "/{user_id}/image")
     public byte[] downloadUserImage(@PathVariable("user_id") Integer user_id) {
         return studentService.downloadUserImage(user_id);
     }
+
+    @CrossOrigin
     @DeleteMapping(path = "/{user_id}/image")
     public void deleteFile(@PathVariable Integer user_id) {
         studentService.deleteImage(user_id);
