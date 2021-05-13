@@ -59,26 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return source;
     }*/
 
-
-  /*  @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedMethods("*").allowedOrigins("http://localhost:3000");
-            }
-        };
-    }*/
-   /* @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                // This wildcard pattern matches any host from domain.com and url patterns like "https:microservice.division.domain.com/version1/some_endpoint"
-                registry.addMapping("/**").allowedMethods("*").allowedOriginPatterns("https://*.domain.com");
-            }
-        };
-    }*/
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -91,8 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new TokenVerifier(secretKey, jwtConfig), UsernameAndPasswordAuthFilter.class)
                 .authorizeRequests()
                 .antMatchers("/**", "/api/students", "/internships", "index", "/css/*", "/js/*").permitAll()
-                // .antMatchers("/organizations/registration").hasRole(UserRole.LEADER.name())
-                //.antMatchers("/api/**").hasRole(UserRole.STUDENT.name())
                 .anyRequest()
                 .authenticated();
     }
