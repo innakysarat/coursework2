@@ -40,4 +40,5 @@ public class StudentManagementController {
         studentService.updateStudentByAdmin(studentId, user.getName(), user.getSurname(), user.getPatronymic(),
                 user.getEmail(), user.getPhone(), user.getUsername(), user.getPassword(), user.getDayOfBirth());
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.coursework.internships;
 
+import com.example.coursework.deadlines.Deadline;
 import com.example.coursework.organizations.Organization;
 import com.example.coursework.reviews.Review;
 import com.example.coursework.student.User;
@@ -74,11 +75,19 @@ public class Internship {
             columnDefinition = "TEXT"
     )
     private String internshipImageLink;
+    @Column(
+            nullable = true
+    )
+    private Double score;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "internship", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private final Set<Deadline> deadlines = new HashSet<>();
 
     public Internship() {
     }
@@ -86,7 +95,7 @@ public class Internship {
     @OneToMany(mappedBy = "internship", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     public Set<Review> reviews = new HashSet<>();
 
-   // @JsonIgnore
+    // @JsonIgnore
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
@@ -150,8 +159,19 @@ public class Internship {
         return Optional.ofNullable(internshipImageLink);
     }
 
+    public Double getScore() {
+        return reviews.stream()
+                .mapToDouble(Review::getScore)
+                .average()
+                .orElse(Double.NaN);
+    }
+
     public void addReview(Review review) {
         reviews.add(review);
+    }
+
+    public void addDeadline(Deadline deadline) {
+        deadlines.add(deadline);
     }
 
     public void assignOrganization(Organization organization) {
@@ -166,6 +186,14 @@ public class Internship {
     public void removeUser(User user) {
         favourites.remove(user);
         user.getInternships().remove(this);
+    }
+
+    public void removeDeadline(Deadline deadline) {
+        deadlines.remove(deadline);
+    }
+
+    public void removeReview(Review review) {
+        reviews.remove(review);
     }
 
     public Set<User> getFavourites() {

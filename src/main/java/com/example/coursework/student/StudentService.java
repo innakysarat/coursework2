@@ -80,12 +80,12 @@ public class StudentService implements UserDetailsService {
     public void deleteStudent(Integer studentId) {
         boolean exists = userRepository.existsById(studentId);
         if (!exists) {
-            throw new IllegalStateException("Student with id " + studentId + " doesn't exist");
+            throw new IllegalStateException("User with id " + studentId + " not found");
         }
         User user = userRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalStateException("Student with id " + studentId + " doesn't exist"));
+                .orElseThrow(() -> new IllegalStateException("User with id " + studentId + " not found"));
         if (user.getRole().equals("ADMIN")) {
-            throw new IllegalStateException("Can't delete admin");
+            throw new IllegalStateException("Cannot delete admin");
         }
         userRepository.deleteById(studentId);
     }
@@ -107,9 +107,9 @@ public class StudentService implements UserDetailsService {
                                        LocalDate dayOfBirth) {
         User user = userRepository.findByUsername(username);
         User user_byId = userRepository.findById(user_id)
-                .orElseThrow(() -> new IllegalStateException("Student with id " + user_id + " doesn't exist"));
+                .orElseThrow(() -> new IllegalStateException("User with id " + user_id + " not found"));
         if (!user.equals(user_byId)) {
-            throw new IllegalStateException("User can not update someone else's information");
+            throw new IllegalStateException("User cannot update someone else's information");
         } else {
             updateStudent(user, name, surname, patronymic, email, phone, username_update, password, dayOfBirth);
         }

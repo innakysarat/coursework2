@@ -27,27 +27,29 @@ public class InternshipController {
         this.internshipRepository = internshipRepository;
     }
 
-    @PostMapping()
+    @PostMapping
     @PreAuthorize("hasAuthority('course:write')")
     public void addInternship(@RequestBody Internship internship,
                               @RequestParam("organization_id") Long organization_id) {
         internshipService.addInternship(organization_id, internship);
     }
 
-    @GetMapping()
+    @GetMapping
     public List<Internship> getInternships() {
         return internshipService.getInternships();
     }
 
-    @GetMapping(path = "{internship_id}")
+    @GetMapping(path = "/{internship_id}")
     public Internship getInternship(@PathVariable Long internship_id) {
         return internshipService.getInternship(internship_id);
     }
 
-    @PutMapping(path = "check/{internship_id}")
+    @PutMapping(path = "/check/{internship_id}")
     @PreAuthorize("hasAuthority('course:check')")
-    public void checkInternship(@PathVariable Long internship_id) {
-        internshipService.checkInternship(internship_id);
+    public void checkInternship(@PathVariable Long internship_id,
+                                @RequestParam("check") boolean isChecked
+    ) {
+        internshipService.checkInternship(internship_id, isChecked);
     }
 
     @PutMapping(path = "/{internship_id}")

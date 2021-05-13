@@ -53,7 +53,7 @@ public class Organization {
     public Organization() {
     }
 
-    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final Set<Internship> internships = new HashSet<>();
 
     public Long getOrganization_id() {

@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.Set;
 
 @RestController
@@ -35,7 +36,11 @@ public class ReviewController {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         String username = authentication == null ? null : (String) authentication.getPrincipal();
-        reviewService.addReview(username, internship_id, review);
+        if (!Objects.equals(username, "anonymousUser")) {
+            reviewService.addReview(username, internship_id, review);
+        } else {
+            throw new IllegalStateException("User must login");
+        }
     }
 
     /**
@@ -53,7 +58,7 @@ public class ReviewController {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         String username = authentication == null ? null : (String) authentication.getPrincipal();
-        if (username != null) {
+        if (!Objects.equals(username, "anonymousUser")) {
             reviewService.updateReviewText(username, review, text);
         } else {
             throw new IllegalStateException("User must login");
@@ -79,7 +84,7 @@ public class ReviewController {
      * @param user_id id пользователя
      * @return отзывы, оставленные пользователем
      */
-    @GetMapping(path = "user/{user_id}")
+    @GetMapping(path = "/user/{user_id}")
     public Set<Review> userReviews(
             @PathVariable Integer user_id
     ) {

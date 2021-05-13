@@ -75,11 +75,11 @@ public class InternshipService {
         }
     }
 
-    public void checkInternship(Long internship_id) {
+    public void checkInternship(Long internship_id, boolean isChecked) {
         Optional<Internship> internshipOptional = internshipRepository.findById(internship_id);
         if (internshipOptional.isPresent()) {
             Internship internship = internshipOptional.get();
-            internship.setChecked(true);
+            internship.setChecked(isChecked);
             internshipRepository.save(internship);
         }
     }

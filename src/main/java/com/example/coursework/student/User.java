@@ -1,5 +1,6 @@
 package com.example.coursework.student;
 
+import com.example.coursework.deadlines.Deadline;
 import com.example.coursework.internships.Internship;
 import com.example.coursework.organizations.Organization;
 import com.example.coursework.reviews.Review;
@@ -111,6 +112,10 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "favourites")
     private final Set<Internship> internships = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private final Set<Deadline> deadlines = new HashSet<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -221,6 +226,11 @@ public class User implements UserDetails {
         return Optional.ofNullable(userImageLink);
     }
 
+    public Set<Deadline> getDeadlines() {
+        return deadlines;
+    }
+
+
     public void setName(String studentName) {
         this.name = studentName;
     }
@@ -316,15 +326,27 @@ public class User implements UserDetails {
     }
 
     public void addOrganization(Organization organization) {
-        this.organizations.add(organization);
+        organizations.add(organization);
     }
 
     public void addReview(Review review) {
         reviews.add(review);
     }
 
+    public void addDeadline(Deadline deadline) {
+        deadlines.add(deadline);
+    }
+
     public Set<Internship> getInternships() {
         return internships;
+    }
+
+    public void removeDeadline(Deadline deadline) {
+        deadlines.remove(deadline);
+    }
+
+    public void removeReview(Review review) {
+        reviews.remove(review);
     }
 
     @Override

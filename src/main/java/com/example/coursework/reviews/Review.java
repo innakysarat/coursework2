@@ -29,12 +29,12 @@ public class Review {
             precision = 3
     )
     private double score;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User author;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "internship_id")
     private Internship internship;
     public Review() {

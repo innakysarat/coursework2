@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
 import java.util.Set;
 
 @RestController
@@ -23,13 +24,13 @@ public class StudentController {
         this.internshipService = internshipService;
     }
 
-    @GetMapping()
+    @GetMapping
     public User getInfoAboutMyself() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         String username = authentication == null ? null : (String) authentication.getPrincipal();
         User user;
-        if (username != null) {
+        if (!Objects.equals(username, "anonymousUser")) {
             user = studentService.getUser(username);
         } else {
             throw new IllegalStateException("User not found");
@@ -37,7 +38,7 @@ public class StudentController {
         return user;
     }
 
-    @PostMapping()
+    @PostMapping
     public void registerNewStudent(@RequestBody User user) {
         studentService.addUser(user);
     }
@@ -48,7 +49,7 @@ public class StudentController {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         String username = authentication == null ? null : (String) authentication.getPrincipal();
-        if (username != null) {
+        if (!Objects.equals(username, "anonymousUser")) {
             studentService.updateStudentByHimself(user_id, username, user_update.getName(), user_update.getSurname(),
                     user_update.getPatronymic(), user_update.getEmail(), user_update.getPhone(),
                     user_update.getUsername(), user_update.getPassword(),
@@ -64,7 +65,7 @@ public class StudentController {
     }
 
     @PostMapping(
-            path = "{user_id}/image",
+            path = "/{user_id}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -73,7 +74,7 @@ public class StudentController {
         studentService.uploadUserImage(user_id, file);
     }
 
-    @GetMapping(path = "{user_id}/image")
+    @GetMapping(path = "/{user_id}/image")
     public byte[] downloadUserImage(@PathVariable("user_id") Integer user_id) {
         return studentService.downloadUserImage(user_id);
     }
@@ -81,4 +82,5 @@ public class StudentController {
     public void deleteFile(@PathVariable Integer user_id) {
         studentService.deleteImage(user_id);
     }
+
 }
