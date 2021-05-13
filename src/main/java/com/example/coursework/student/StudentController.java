@@ -37,12 +37,13 @@ public class StudentController {
         }
         return user;
     }
-    @CrossOrigin(origins = "http://localhost:8080")
+    @CrossOrigin
     @PostMapping
     public void registerNewStudent(@RequestBody User user) {
         studentService.addUser(user);
     }
 
+    @CrossOrigin
     @PutMapping(path = "/{user_id}")
     public void updateInfo(@PathVariable Integer user_id,
                            @RequestBody User user_update) {

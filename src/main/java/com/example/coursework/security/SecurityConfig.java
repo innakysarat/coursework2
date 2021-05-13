@@ -21,6 +21,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.crypto.SecretKey;
 import java.util.Arrays;
@@ -62,13 +63,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return source;
     }
 
-    @Bean
+    /*    @Bean
+        public WebMvcConfigurer corsConfigurer() {
+            return new WebMvcConfigurer() {
+                @Override
+                public void addCorsMappings(CorsRegistry registry) {
+                    // This wildcard pattern matches any host from domain.com and url patterns like "https:microservice.division.domain.com/version1/some_endpoint"
+                    registry.addMapping("/**").allowedMethods("*").allowedOriginPatterns("https://*");
+                }
+            };
+        }*/
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                // This wildcard pattern matches any host from domain.com and url patterns like "https:microservice.division.domain.com/version1/some_endpoint"
-                registry.addMapping("/**").allowedMethods("*").allowedOriginPatterns("https://*");
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000");
             }
         };
     }
@@ -109,7 +118,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().and()
+             //   .cors().and()
                 .csrf().disable()
                 //  .cors().configurationSource(corsConfigurationSource())
                 //.and()
