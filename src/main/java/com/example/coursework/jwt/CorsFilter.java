@@ -1,4 +1,4 @@
-package com.example.coursework.jwt;
+/*package com.example.coursework.jwt;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -31,4 +31,4 @@ public class CorsFilter extends OncePerRequestFilter {
         //filterChain.doFilter(request, response);
     }
 
-}
+}*/
