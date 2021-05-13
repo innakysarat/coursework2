@@ -41,13 +41,7 @@ public class UsernameAndPasswordAuthFilter extends UsernamePasswordAuthenticatio
                                                 HttpServletResponse response) throws AuthenticationException {
 
         try {
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            response.setHeader("Access-Control-Max-Age", "3600");
-            // "authorization, content-type, xsrf-token"
-            response.setHeader("Access-Control-Allow-Headers", "Authorization, XSRF-Token, Origin, X-Requested-With, Content-Type, Accept");
-            response.addHeader("Access-Control-Expose-Headers", "XSRF-Token");
-            response.addHeader("Access-Control-Allow-Credentials", "true");
+
             UsernameAndPasswordAuthRequest authenticationRequest = new ObjectMapper()
                     .readValue(request.getInputStream(), UsernameAndPasswordAuthRequest.class);
 

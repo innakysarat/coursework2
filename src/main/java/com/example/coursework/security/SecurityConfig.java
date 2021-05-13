@@ -1,6 +1,6 @@
 package com.example.coursework.security;
 
-//import com.example.coursework.jwt.CorsFilter;
+import com.example.coursework.jwt.CorsFilter;
 
 import com.example.coursework.jwt.JwtConfig;
 import com.example.coursework.jwt.TokenVerifier;
@@ -79,13 +79,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-              //  .cors()
-               // .and()
+                // .cors()
+                //.and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                //.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
+                .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .addFilter(new UsernameAndPasswordAuthFilter(authenticationManager(), jwtConfig, secretKey))
                 .addFilterAfter(new TokenVerifier(secretKey, jwtConfig), UsernameAndPasswordAuthFilter.class)
                 //  .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
