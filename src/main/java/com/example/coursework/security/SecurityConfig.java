@@ -73,15 +73,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 }
             };
         }*/
+    @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000");
+                registry.addMapping("/**").allowedMethods("*").allowedOrigins("http://localhost:3000");
             }
         };
     }
-
+   /* @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                // This wildcard pattern matches any host from domain.com and url patterns like "https:microservice.division.domain.com/version1/some_endpoint"
+                registry.addMapping("/**").allowedMethods("*").allowedOriginPatterns("https://*.domain.com");
+            }
+        };
+    }*/
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -102,10 +112,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated();
     }
-    /*    .antMatchers("/management/api/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.LEADER.name())
-                       .antMatchers(HttpMethod.DELETE, "/management/api/**").hasAuthority(UserPermission.COURSE_WRITE.getPermission())
-                       .antMatchers(HttpMethod.POST, "/management/api/**").hasAuthority(UserPermission.COURSE_WRITE.getPermission())
-                       .antMatchers(HttpMethod.PUT, "/management/api/**").hasAuthority(UserPermission.COURSE_WRITE.getPermission())*/
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
