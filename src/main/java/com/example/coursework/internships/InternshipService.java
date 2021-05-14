@@ -162,7 +162,7 @@ public class InternshipService {
             userRepository.save(user);
             internshipRepository.save(internship);
         } else {
-            throw new IllegalStateException("User/internship is absent");
+            throw new IllegalStateException("User/internship not found");
         }
     }
 
@@ -171,7 +171,7 @@ public class InternshipService {
         if (internship != null) {
             return internship.getFavourites();
         } else {
-            throw new IllegalStateException("Internship doesn't exist");
+            throw new IllegalStateException("Internship not found");
         }
     }
 
@@ -183,7 +183,7 @@ public class InternshipService {
             userRepository.save(user);
             internshipRepository.save(internship);
         } else {
-            throw new IllegalStateException("User/internship is absent");
+            throw new IllegalStateException("User/internship not found");
         }
     }
 

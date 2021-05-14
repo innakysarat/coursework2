@@ -226,9 +226,7 @@ public class User implements UserDetails {
         return Optional.ofNullable(userImageLink);
     }
 
-    public Set<Deadline> getDeadlines() {
-        return deadlines;
-    }
+    public Set<Deadline> getDeadlines() { return deadlines; }
 
 
     public void setName(String studentName) {
@@ -323,10 +321,6 @@ public class User implements UserDetails {
 
     public Set<Review> getReviews() {
         return reviews;
-    }
-
-    public void addOrganization(Organization organization) {
-        organizations.add(organization);
     }
 
     public void addReview(Review review) {

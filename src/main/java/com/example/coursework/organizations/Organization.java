@@ -39,19 +39,20 @@ public class Organization {
             columnDefinition = "TEXT"
     )
     private String organizationImageLink;
+    public Organization() {
+    }
+
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
     @JoinTable(
-            name = "leaders_organizations",
+            name = "users_organizations",
             joinColumns = @JoinColumn(name = "organization_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private final Set<User> leaders = new HashSet<>();
 
-    public Organization() {
-    }
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final Set<Internship> internships = new HashSet<>();
@@ -91,11 +92,11 @@ public class Organization {
     }
 
     public Set<Internship> getInternships() {
-        return this.internships;
+        return internships;
     }
 
     public void addInternship(Internship internship) {
-        this.internships.add(internship);
+        internships.add(internship);
     }
 
     public void setName(String name) {

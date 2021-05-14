@@ -5,6 +5,7 @@ import com.example.coursework.filestore.FileStore;
 import com.example.coursework.images.ImageService;
 import com.example.coursework.internships.Internship;
 import com.example.coursework.internships.InternshipRepository;
+import com.example.coursework.organizations.Organization;
 import com.example.coursework.security.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -295,5 +296,17 @@ public class StudentService implements UserDetailsService {
         } else {
             throw new IllegalStateException("Failed to delete user image");
         }
+    }
+
+    public Set<Organization> getOrganizations(Integer user_id, String username) {
+        User user = userRepository.findByUsername(username);
+        User user_byId = userRepository.findById(user_id)
+                .orElseThrow(() -> new IllegalStateException("User with id " + user_id + " not found"));
+        if (!user.equals(user_byId)) {
+            throw new IllegalStateException("User cannot update someone else's information");
+        } else {
+            return user.getOrganizations();
+        }
+
     }
 }

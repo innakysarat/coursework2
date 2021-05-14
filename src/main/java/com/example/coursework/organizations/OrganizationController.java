@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @RestController
@@ -24,19 +25,21 @@ public class OrganizationController {
         this.organizationService = organizationService;
     }
 
-    @PostMapping()
-    @PreAuthorize("hasAuthority('organization:write')")
+    @CrossOrigin
+    @PostMapping
+   // @PreAuthorize("hasAuthority('organization:write')")
     public void addOrganization(@RequestBody Organization organization) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         String username = authentication == null ? null : (String) authentication.getPrincipal();
-        if (username != null) {
+        if (!Objects.equals(username, "anonymousUser")) {
             organizationService.addOrganization(username, organization);
-        }// else {
-        //     throw new IllegalStateException("User must login");
-        //  }
+        } else {
+            throw new IllegalStateException("User must login");
+        }
     }
 
+    @CrossOrigin
     @GetMapping(path = "/{organization_id}")
     public Organization getOrganization(
             @PathVariable Long organization_id) {
@@ -44,11 +47,13 @@ public class OrganizationController {
         return organizationService.getOrganization(organization_id);
     }
 
+    @CrossOrigin
     @GetMapping
     public List<Organization> getOrganizations() {
         return organizationService.getOrganizations();
     }
 
+    @CrossOrigin
     @GetMapping(path = "/leaders")
     //@PreAuthorize("hasAuthority('organization:read')")
     public Set<User> getLeadersOfOrganization(
@@ -57,6 +62,7 @@ public class OrganizationController {
         return organizationService.getLeadersOfOrganization(organization_id);
     }
 
+    @CrossOrigin
     @PostMapping("/{organization_id}")
     @PreAuthorize("hasAuthority('organization:write')")
     public void addLeadersToOrganization(
@@ -67,6 +73,7 @@ public class OrganizationController {
         organizationService.addOrganization(username, organization);
     }
 
+    @CrossOrigin
     @DeleteMapping
     @PreAuthorize("hasAuthority('organization:write')")
     public void removeLeaderFromOrganization(
@@ -88,11 +95,13 @@ public class OrganizationController {
          internship.assignOrganization(organization);
          return internshipService.addInternship(internship);
      }*/
+    @CrossOrigin
     @DeleteMapping(path = "/{organization_id}")
     public void deleteOrganization(@PathVariable Long organization_id) {
         organizationService.deleteOrganization(organization_id);
     }
 
+    @CrossOrigin
     @PutMapping(path = "/{organization_id}")
     @PreAuthorize("hasAuthority('organization:write')")
     public void updateInternship(@PathVariable Long organization_id,
@@ -100,6 +109,8 @@ public class OrganizationController {
         organizationService.updateOrganization(organization_id, organization.getName(), organization.getDescription(),
                 organization.getReference());
     }
+
+    @CrossOrigin
     @PostMapping(
             path = "{organization_id}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -111,11 +122,13 @@ public class OrganizationController {
         organizationService.uploadOrganizationImage(organization_id, file);
     }
 
+    @CrossOrigin
     @GetMapping(path = "{organization_id}/image")
     public byte[] downloadOrganizationImage(@PathVariable("organization_id") Long organization_id) {
         return organizationService.downloadOrganizationImage(organization_id);
     }
 
+    @CrossOrigin
     @DeleteMapping(path = "/{organization_id}/image")
     @PreAuthorize("hasAuthority('organization:write')")
     public void deleteFile(@PathVariable Long organization_id) {

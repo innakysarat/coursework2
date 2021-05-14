@@ -31,14 +31,9 @@ public class OrganizationService {
 
     public void addOrganization(String username, Organization organization) {
         User user = userRepository.findByUsername(username);
-        if (user != null) {
-            // user.addOrganization(organization); // добавляем связь руководитель - организация
-            organization.addLeader(user); // добавляем в список руководителей организации данного руководителя
-            userRepository.save(user);
-            organizationRepository.save(organization);
-        } else {
-            throw new IllegalStateException("Leader is absent");
-        }
+        organization.addLeader(user); // добавляем в список руководителей организации данного руководителя
+        userRepository.save(user);
+        organizationRepository.save(organization);
     }
 
     public void deleteLeader(String username, String organization_name) {
