@@ -79,16 +79,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                // .cors()
+                //.cors()
                 //.and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(new CorsFilter(), UsernameAndPasswordAuthFilter.class)//ChannelProcessingFilter.class)
+                .addFilterBefore(new CorsFilter(), UsernameAndPasswordAuthFilter.class)
                 .addFilter(new UsernameAndPasswordAuthFilter(authenticationManager(), jwtConfig, secretKey))
                 .addFilterAfter(new TokenVerifier(secretKey, jwtConfig), UsernameAndPasswordAuthFilter.class)
-                //  .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .authorizeRequests()
                 .antMatchers("/**", "/api/students", "/internships", "index", "/css/*", "/js/*").permitAll()
                 .anyRequest()
