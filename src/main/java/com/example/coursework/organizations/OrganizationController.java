@@ -1,6 +1,5 @@
 package com.example.coursework.organizations;
 
-import com.example.coursework.internships.Internship;
 import com.example.coursework.student.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,7 +26,7 @@ public class OrganizationController {
 
     @CrossOrigin
     @PostMapping
-   // @PreAuthorize("hasAuthority('organization:write')")
+    @PreAuthorize("hasAuthority('organization:write')")
     public void addOrganization(@RequestBody Organization organization) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
@@ -55,7 +54,7 @@ public class OrganizationController {
 
     @CrossOrigin
     @GetMapping(path = "/leaders")
-    //@PreAuthorize("hasAuthority('organization:read')")
+    @PreAuthorize("hasAuthority('organization:read')")
     public Set<User> getLeadersOfOrganization(
             @RequestParam("organization") Long organization_id
     ) {
@@ -97,6 +96,7 @@ public class OrganizationController {
      }*/
     @CrossOrigin
     @DeleteMapping(path = "/{organization_id}")
+    @PreAuthorize("hasAuthority('organization:write')")
     public void deleteOrganization(@PathVariable Long organization_id) {
         organizationService.deleteOrganization(organization_id);
     }

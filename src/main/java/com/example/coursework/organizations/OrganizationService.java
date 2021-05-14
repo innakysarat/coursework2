@@ -75,7 +75,7 @@ public class OrganizationService {
     public void deleteOrganization(Long organization_id) {
         boolean exists = organizationRepository.existsById(organization_id);
         if (!exists) {
-            throw new IllegalStateException("Internship with id " + organization_id + " doesn't exist");
+            throw new IllegalStateException("Internship with id " + organization_id + " not found");
         }
         organizationRepository.deleteById(organization_id);
     }
