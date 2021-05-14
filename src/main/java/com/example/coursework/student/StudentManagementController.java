@@ -16,24 +16,28 @@ public class StudentManagementController {
         this.studentService = studentService;
     }
 
+    @CrossOrigin
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN, ROLE_LEADER')")
     public List<User> getAllStudents() {
         return studentService.getUsers();
     }
 
+    @CrossOrigin
     @PostMapping
     @PreAuthorize("hasAuthority('student:write')")
     public void registerNewStudent(@RequestBody User user) {
         studentService.addUser(user);
     }
 
+    @CrossOrigin
     @DeleteMapping(path = "/{studentId}")
     @PreAuthorize("hasAuthority('student:write')")
     public void deleteStudent(@PathVariable("studentId") Integer studentId) {
         studentService.deleteStudent(studentId);
     }
 
+    @CrossOrigin
     @PutMapping(path = "/{studentId}")
     @PreAuthorize("hasAuthority('student:write')")
     public void updateStudent(@PathVariable("studentId") Integer studentId, @RequestBody User user) {
