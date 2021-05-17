@@ -49,7 +49,7 @@ public class ReviewController {
 
     @DeleteMapping(path = "/{review_id}")
     public void deleteReview(
-            @PathVariable(name = "review_id") Review review
+            @PathVariable(name = "review_id") Long review
     ) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();

@@ -49,8 +49,7 @@ public class ReviewService {
                 review.setTextcomment(text);
             }
             reviewRepository.save(review);
-        }
-        else {
+        } else {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot delete someone else's review"
             );
@@ -79,10 +78,13 @@ public class ReviewService {
         return reviewSet;
     }
 
-    public void deleteReview(String username, Review review) {
+    public void deleteReview(String username, Long review_id) {
         User user = userRepository.findByUsername(username);
+        Review review = reviewRepository.findById(review_id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Review not found"));
         if (review.getAuthor().equals(user)) {
-            reviewRepository.delete(review);
+            reviewRepository.deleteById(review_id);
         } else {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot delete someone else's review"
