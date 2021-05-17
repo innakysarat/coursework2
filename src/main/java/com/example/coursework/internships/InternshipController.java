@@ -26,7 +26,7 @@ public class InternshipController {
         this.internshipService = internshipService;
         this.internshipRepository = internshipRepository;
     }
-
+    @CrossOrigin
     @PostMapping
     @PreAuthorize("hasAuthority('course:write')")
     public void addInternship(@RequestBody Internship internship,
@@ -40,13 +40,13 @@ public class InternshipController {
     public List<Internship> getInternships() {
         return internshipService.getInternships();
     }
-
+    @CrossOrigin
     @GetMapping(path = "/{internship_id}")
     public Internship getInternship(@PathVariable Long internship_id) {
         // любой пользователь, администратор, руководитель только нужный
         return internshipService.getInternship(internship_id);
     }
-
+    @CrossOrigin
     @PutMapping(path = "/check/{internship_id}")
     @PreAuthorize("hasAuthority('course:check')")
     public void checkInternship(@PathVariable Long internship_id,
@@ -54,7 +54,7 @@ public class InternshipController {
     ) {
         internshipService.checkInternship(internship_id, isChecked);
     }
-
+    @CrossOrigin
     @PutMapping(path = "/{internship_id}")
     @PreAuthorize("hasAuthority('course:write')")
     public void updateInternship(@PathVariable Long internship_id,
@@ -64,14 +64,14 @@ public class InternshipController {
                 internship.getStartDate(), internship.getFinishDate(),
                 internship.getPrice(), internship.getCountry(), internship.getLanguage(), internship.getSubject());
     }
-
+    @CrossOrigin
     @DeleteMapping(path = "/{internship_id}")
     @PreAuthorize("hasAuthority('course:write')")
     public void deleteInternship(@PathVariable Long internship_id) {
         // проверка на нужного руководителя
         internshipService.deleteInternship(internship_id);
     }
-
+    @CrossOrigin
     @GetMapping("/filter")
     public Iterable<Internship> find(@RequestParam(value = "search") String search) {
         InternshipPredicatesBuilder builder = new InternshipPredicatesBuilder();
@@ -89,27 +89,27 @@ public class InternshipController {
             return internshipRepository.findAll();
         }
     }
-
+    @CrossOrigin
     @GetMapping("/subjects")
     public Set<String> findSubjects() {
         return internshipService.findSubjects();
     }
-
+    @CrossOrigin
     @GetMapping("/countries")
     public Set<String> findCountries() {
         return internshipService.findCountries();
     }
-
+    @CrossOrigin
     @GetMapping("/languages")
     public Set<String> findLanguages() {
         return internshipService.findLanguages();
     }
-
+    @CrossOrigin
     @GetMapping("/prices")
     public Set<Integer> findPrices() {
         return internshipService.findPrices();
     }
-
+    @CrossOrigin
     @PostMapping("/favourites")
     public void addFavourites(
             @RequestParam(value = "username") String username,
@@ -117,7 +117,7 @@ public class InternshipController {
     ) {
         internshipService.addFavourites(username, internship_name);
     }
-
+    @CrossOrigin
     @DeleteMapping("/favourites")
     public void deleteFavourites(
             @RequestParam(value = "username") String username,
@@ -125,13 +125,22 @@ public class InternshipController {
     ) {
         internshipService.deleteFavourites(username, internship_name);
     }
-
+    @CrossOrigin
     @GetMapping("/favourites")
     public Set<User> getUsersFavourites(
             @RequestParam(value = "internship_name") String internship_name
     ) {
         // админ + нужный руководитель
         return internshipService.getUsersFavourites(internship_name);
+    }
+
+    @CrossOrigin
+    @GetMapping("/organization")
+    public Long getOrganization(
+            @RequestParam("internship") String internship_name
+    ) {
+        // админ + нужный руководитель
+        return internshipService.getOrganization(internship_name);
     }
 
     @PostMapping(

@@ -55,9 +55,8 @@ public class InternshipService {
         if (internshipOptional.isPresent()) {
             internship = internshipOptional.get();
             return internship;
-        }
-        else{
-           throw new ResponseStatusException(
+        } else {
+            throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Internship not found");
         }
     }
@@ -76,13 +75,13 @@ public class InternshipService {
         Organization organization = organizationRepository.findById(organization_id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Organization not found"));
-            internship.assignOrganization(organization); // добавляем связь стажировка - организация
-            organization.addInternship(internship); // добавляем к списку стажировок орагнизации данную стажировку
-            countryDao.addCountry(internship.getCountry());
-            subjectDao.addSubject(internship.getSubject());
-            languageDao.addLanguage(internship.getLanguage());
-            priceDao.addPrice(internship.getPrice());
-            internshipRepository.save(internship);
+        internship.assignOrganization(organization); // добавляем связь стажировка - организация
+        organization.addInternship(internship); // добавляем к списку стажировок орагнизации данную стажировку
+        countryDao.addCountry(internship.getCountry());
+        subjectDao.addSubject(internship.getSubject());
+        languageDao.addLanguage(internship.getLanguage());
+        priceDao.addPrice(internship.getPrice());
+        internshipRepository.save(internship);
     }
 
     public void checkInternship(Long internship_id, boolean isChecked) {
@@ -280,6 +279,18 @@ public class InternshipService {
             }
 
         } else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship not found");
+        }
+    }
+
+
+    public Long getOrganization(String internship_name) {
+        Internship internship = internshipRepository.findByName(internship_name);
+        if (internship != null) {
+            return internship.getOrganization().getOrganization_id();
+        }
+        else{
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Internship not found");
         }
