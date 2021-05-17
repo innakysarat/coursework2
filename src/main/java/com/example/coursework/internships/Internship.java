@@ -59,11 +59,11 @@ public class Internship {
             columnDefinition = "TEXT"
     )
     private String language;
-    @Column()
+    @Column
     private Integer price;
-    @Column()
+    @Column
     private Integer age_min;
-    @Column()
+    @Column
     private Integer age_max;
 
     @Column(

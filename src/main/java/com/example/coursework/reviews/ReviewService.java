@@ -5,7 +5,9 @@ import com.example.coursework.internships.InternshipRepository;
 import com.example.coursework.student.UserRepository;
 import com.example.coursework.student.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -48,6 +50,11 @@ public class ReviewService {
             }
             reviewRepository.save(review);
         }
+        else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Cannot delete someone else's review"
+            );
+        }
     }
 
     public Set<Review> getUserReviews(Integer user_id) {
@@ -70,5 +77,16 @@ public class ReviewService {
             reviewSet = internship.getReviews();
         }
         return reviewSet;
+    }
+
+    public void deleteReview(String username, Review review) {
+        User user = userRepository.findByUsername(username);
+        if (review.getAuthor().equals(user)) {
+            reviewRepository.delete(review);
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Cannot delete someone else's review"
+            );
+        }
     }
 }

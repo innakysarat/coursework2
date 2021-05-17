@@ -1,10 +1,12 @@
 package com.example.coursework.reviews;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
 import java.util.Set;
@@ -39,7 +41,25 @@ public class ReviewController {
         if (!Objects.equals(username, "anonymousUser")) {
             reviewService.addReview(username, internship_id, review);
         } else {
-            throw new IllegalStateException("User must login");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "User must login"
+            );
+        }
+    }
+
+    @DeleteMapping(path = "/{review_id}")
+    public void deleteReview(
+            @PathVariable(name = "review_id") Review review
+    ) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication == null ? null : (String) authentication.getPrincipal();
+        if (!Objects.equals(username, "anonymousUser")) {
+            reviewService.deleteReview(username, review);
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "User must login"
+            );
         }
     }
 
@@ -61,7 +81,9 @@ public class ReviewController {
         if (!Objects.equals(username, "anonymousUser")) {
             reviewService.updateReviewText(username, review, text);
         } else {
-            throw new IllegalStateException("User must login");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "User must login"
+            );
         }
     }
 
