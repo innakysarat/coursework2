@@ -5,7 +5,9 @@ import com.example.coursework.internships.InternshipRepository;
 import com.example.coursework.student.User;
 import com.example.coursework.student.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -30,7 +32,8 @@ public class DeadlineService {
     public void addDeadline(String username, Long internship_id, Deadline deadline) {
         User user = userRepository.findByUsername(username);
         Internship internship = internshipRepository.findById(internship_id)
-                .orElseThrow(() -> new IllegalStateException("Internship not found"));
+                .orElseThrow(() ->  new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Internship not found"));
         deadline.setUser(user);
         deadline.setInternship(internship);
         user.addDeadline(deadline);
@@ -43,7 +46,8 @@ public class DeadlineService {
     public void deleteDeadline(Long deadline_id, String username) {
         User user = userRepository.findByUsername(username);
         Deadline deadline = deadlineRepository.findById(deadline_id)
-                .orElseThrow(() -> new IllegalStateException("Deadline not found"));
+                .orElseThrow(() ->  new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Deadline not found"));
         Internship internship = deadline.getInternship();
         deadlineRepository.deleteById(deadline_id);
         user.removeDeadline(deadline);
@@ -60,7 +64,8 @@ public class DeadlineService {
     public void updateDeadline(String username, Long deadline_id, String description,
                                LocalDate finish, LocalDate start, boolean isCompleted) {
         Deadline deadline = deadlineRepository.findById(deadline_id)
-                .orElseThrow(() -> new IllegalStateException("Deadline not found"));
+                .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Deadline not found"));
         User user = userRepository.findByUsername(username);
         Internship internship = deadline.getInternship();
         internship.removeDeadline(deadline);
@@ -91,11 +96,13 @@ public class DeadlineService {
     public Deadline getUserDeadline(String username, Long deadline_id) {
         User user = userRepository.findByUsername(username);
         Deadline deadline = deadlineRepository.findById(deadline_id)
-                .orElseThrow(() -> new IllegalStateException("Deadline not found"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Deadline not found"));
         if (Objects.equals(deadline.getUser(), user)) {
             return deadline;
         } else {
-            throw new IllegalStateException("Cannot get someone else's deadline");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Cannot get someone else's deadline");
         }
     }
 }

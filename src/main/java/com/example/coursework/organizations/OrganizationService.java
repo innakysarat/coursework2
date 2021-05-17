@@ -7,8 +7,10 @@ import com.example.coursework.internships.Internship;
 import com.example.coursework.student.User;
 import com.example.coursework.student.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -30,6 +32,12 @@ public class OrganizationService {
     }
 
     public void addOrganization(String username, Organization organization) {
+        Organization organization_name = organizationRepository.findByName(organization.getName());
+        if (organization_name != null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Name is taken"
+            );
+        }
         User user = userRepository.findByUsername(username);
         organization.addLeader(user); // добавляем в список руководителей организации данного руководителя
         userRepository.save(user);
@@ -44,7 +52,9 @@ public class OrganizationService {
             userRepository.save(user);
             organizationRepository.save(organization);
         } else {
-            throw new IllegalStateException("Leader and/or organization don't exist");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Leader and/or organization not found");
+            //  throw new IllegalStateException("Leader and/or organization not found");
         }
     }
 
@@ -53,7 +63,8 @@ public class OrganizationService {
         if (organization.isPresent()) {
             return organization.get();
         } else {
-            throw new IllegalStateException("Organization doesn't exist");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Organization not found");
         }
     }
 
@@ -75,7 +86,9 @@ public class OrganizationService {
     public void deleteOrganization(Long organization_id) {
         boolean exists = organizationRepository.existsById(organization_id);
         if (!exists) {
-            throw new IllegalStateException("Internship with id " + organization_id + " not found");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship with id " + organization_id + " not found");
+            // throw new IllegalStateException("Internship with id " + organization_id + " not found");
         }
         organizationRepository.deleteById(organization_id);
     }
@@ -88,6 +101,12 @@ public class OrganizationService {
             if (name != null &&
                     name.length() > 0 &&
                     !Objects.equals(organization.getName(), name)) {
+                Organization organization_name = organizationRepository.findByName(name);
+                if (organization_name != null) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Name is taken"
+                    );
+                }
                 organization.setName(name);
             }
             if (description != null &&
@@ -113,7 +132,8 @@ public class OrganizationService {
             Organization organization = optionalOrganization.get();
             Map<String, String> metadata = imageService.extractMetadata(file);
 
-            String path = String.format("%s/%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), "organization", organization.getOrganization_id());
+            String path = String.format("%s/%s/%s", BucketName.PROFILE_IMAGE.getBucketName(),
+                    "organization", organization.getOrganization_id());
             String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
 
             try {
@@ -124,7 +144,9 @@ public class OrganizationService {
                 throw new IllegalStateException(e);
             }
         } else {
-            throw new IllegalStateException("Organization not found");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Organization not found");
+            // throw new IllegalStateException("Organization not found");
         }
 
     }
@@ -141,7 +163,9 @@ public class OrganizationService {
                     .map(key -> fileStore.download(path, key))
                     .orElse(new byte[0]);
         } else {
-            throw new IllegalStateException("Failed to download organization image");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Failed to download organization image");
+            // throw new IllegalStateException("Failed to download organization image");
         }
     }
 
@@ -160,10 +184,14 @@ public class OrganizationService {
                 organization.setOrganizationImageLink(null);
                 organizationRepository.save(organization);
             } else {
-                throw new IllegalStateException("Image not found");
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Image not found");
+                // throw new IllegalStateException("Image not found");
             }
         } else {
-            throw new IllegalStateException("Failed to delete organization image");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Failed to delete organization image");
+            //  throw new IllegalStateException("Failed to delete organization image");
         }
     }
 }

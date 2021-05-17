@@ -1,7 +1,9 @@
 package com.example.coursework.images;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,13 +25,17 @@ public class ImageService {
                 IMAGE_JPEG.getMimeType(),
                 IMAGE_PNG.getMimeType(),
                 IMAGE_GIF.getMimeType()).contains(file.getContentType())) {
-            throw new IllegalStateException("File must be an image [" + file.getContentType() + "]");
+          throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "File must be an image [" + file.getContentType() + "]");
+           // throw new IllegalStateException("File must be an image [" + file.getContentType() + "]");
         }
     }
 
     public void isFileEmpty(MultipartFile file) {
         if (file.isEmpty()) {
-            throw new IllegalStateException("Cannot upload empty file [ " + file.getSize() + "]");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Cannot upload empty file [ " + file.getSize() + "]");
+           // throw new IllegalStateException("Cannot upload empty file [ " + file.getSize() + "]");
         }
     }
 }

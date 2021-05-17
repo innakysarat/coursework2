@@ -31,6 +31,7 @@ public class InternshipController {
     @PreAuthorize("hasAuthority('course:write')")
     public void addInternship(@RequestBody Internship internship,
                               @RequestParam("organization_id") Long organization_id) {
+        // ТОЛЬКО РУКОВОДИТЕЛЬ
         internshipService.addInternship(organization_id, internship);
     }
 
@@ -42,6 +43,7 @@ public class InternshipController {
 
     @GetMapping(path = "/{internship_id}")
     public Internship getInternship(@PathVariable Long internship_id) {
+        // любой пользователь, администратор, руководитель только нужный
         return internshipService.getInternship(internship_id);
     }
 
@@ -66,6 +68,7 @@ public class InternshipController {
     @DeleteMapping(path = "/{internship_id}")
     @PreAuthorize("hasAuthority('course:write')")
     public void deleteInternship(@PathVariable Long internship_id) {
+        // проверка на нужного руководителя
         internshipService.deleteInternship(internship_id);
     }
 
@@ -127,6 +130,7 @@ public class InternshipController {
     public Set<User> getUsersFavourites(
             @RequestParam(value = "internship_name") String internship_name
     ) {
+        // админ + нужный руководитель
         return internshipService.getUsersFavourites(internship_name);
     }
 
@@ -138,6 +142,7 @@ public class InternshipController {
     @PreAuthorize("hasAuthority('course:write')")
     public void uploadInternshipImage(@PathVariable("internship_id") Long internship_id,
                                       @RequestParam("image") MultipartFile file) {
+        // нужный руковод
         internshipService.uploadInternshipImage(internship_id, file);
     }
 
@@ -149,6 +154,7 @@ public class InternshipController {
     @DeleteMapping(path = "/{internship_id}/image")
     @PreAuthorize("hasAuthority('course:write')")
     public void deleteFile(@PathVariable Long internship_id) {
+        // нужный руковод
         internshipService.deleteImage(internship_id);
     }
 }

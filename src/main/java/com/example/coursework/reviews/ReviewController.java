@@ -25,7 +25,7 @@ public class ReviewController {
      * @param internship_id id стажировки
      * @param review        отзыв
      */
-    @PostMapping()
+    @PostMapping
     @PreAuthorize("hasAuthority('review:add')")
     public void addReview(
             // @AuthenticationPrincipal User currentUser,
@@ -88,6 +88,7 @@ public class ReviewController {
     public Set<Review> userReviews(
             @PathVariable Integer user_id
     ) {
+        // нужный пользователь + администратор
         return reviewService.getUserReviews(user_id);
     }
 

@@ -39,7 +39,12 @@ public class StudentManagementController {
     @DeleteMapping(path = "/{studentId}")
     @PreAuthorize("hasAuthority('student:write')")
     public void deleteStudent(@PathVariable("studentId") Integer studentId) {
-        studentService.deleteStudent(studentId);
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication == null ? null : (String) authentication.getPrincipal();
+        if (!Objects.equals(username, "anonymousUser")) {
+            studentService.deleteStudent(studentId, username);
+        }
     }
 
     @CrossOrigin

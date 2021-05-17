@@ -9,8 +9,10 @@ import com.example.coursework.organizations.Organization;
 import com.example.coursework.student.User;
 import com.example.coursework.student.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -49,11 +51,15 @@ public class InternshipService {
 
     public Internship getInternship(Long internship_id) {
         Optional<Internship> internshipOptional = internshipRepository.findById(internship_id);
-        Internship internship = null;
+        Internship internship;
         if (internshipOptional.isPresent()) {
             internship = internshipOptional.get();
+            return internship;
         }
-        return internship;
+        else{
+           throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship not found");
+        }
     }
 
     public List<Internship> getInternships() {
@@ -61,18 +67,22 @@ public class InternshipService {
     }
 
     public void addInternship(Long organization_id, Internship internship) {
-        Optional<Organization> organizationOptional = organizationRepository.findById(organization_id);
-        if (organizationOptional.isPresent()) {
-            Organization organization = organizationOptional.get();
+        Internship internship_name = internshipRepository.findByName(internship.getName());
+        if (internship_name != null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Name is taken"
+            );
+        }
+        Organization organization = organizationRepository.findById(organization_id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Organization not found"));
             internship.assignOrganization(organization); // добавляем связь стажировка - организация
             organization.addInternship(internship); // добавляем к списку стажировок орагнизации данную стажировку
-            // organizationRepository.save(organization);
             countryDao.addCountry(internship.getCountry());
             subjectDao.addSubject(internship.getSubject());
             languageDao.addLanguage(internship.getLanguage());
             priceDao.addPrice(internship.getPrice());
             internshipRepository.save(internship);
-        }
     }
 
     public void checkInternship(Long internship_id, boolean isChecked) {
@@ -87,7 +97,8 @@ public class InternshipService {
     public void deleteInternship(Long internship_id) {
         boolean exists = internshipRepository.existsById(internship_id);
         if (!exists) {
-            throw new IllegalStateException("Internship with id " + internship_id + " doesn't exist");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship not found");
         }
         internshipRepository.deleteById(internship_id);
     }
@@ -102,6 +113,12 @@ public class InternshipService {
             if (name != null &&
                     name.length() > 0 &&
                     !Objects.equals(internship.getName(), name)) {
+                Internship internship_name = internshipRepository.findByName(name);
+                if (internship_name != null) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Name is taken"
+                    );
+                }
                 internship.setName(name);
             }
             if (description != null &&
@@ -156,14 +173,18 @@ public class InternshipService {
 
     public void addFavourites(String username, String internship_name) {
         User user = userRepository.findByUsername(username);
-        Internship internship = internshipRepository.findByName(internship_name);
-        if (user != null && internship != null) {
-            internship.addUsers(user);
-            userRepository.save(user);
-            internshipRepository.save(internship);
-        } else {
-            throw new IllegalStateException("User/internship not found");
+        if (user == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found");
         }
+        Internship internship = internshipRepository.findByName(internship_name);
+        if (internship == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship not found");
+        }
+        internship.addUsers(user);
+        userRepository.save(user);
+        internshipRepository.save(internship);
     }
 
     public Set<User> getUsersFavourites(String internship_name) {
@@ -171,20 +192,25 @@ public class InternshipService {
         if (internship != null) {
             return internship.getFavourites();
         } else {
-            throw new IllegalStateException("Internship not found");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship not found");
         }
     }
 
     public void deleteFavourites(String username, String internship_name) {
         User user = userRepository.findByUsername(username);
-        Internship internship = internshipRepository.findByName(internship_name);
-        if (user != null && internship != null) {
-            internship.removeUser(user);
-            userRepository.save(user);
-            internshipRepository.save(internship);
-        } else {
-            throw new IllegalStateException("User/internship not found");
+        if (user == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found");
         }
+        Internship internship = internshipRepository.findByName(internship_name);
+        if (internship == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship not found");
+        }
+        internship.removeUser(user);
+        userRepository.save(user);
+        internshipRepository.save(internship);
     }
 
 
@@ -198,7 +224,8 @@ public class InternshipService {
 
             Map<String, String> metadata = imageService.extractMetadata(file);
 
-            String path = String.format("%s/%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), "internship", internship.getInternship_id());
+            String path = String.format("%s/%s/%s", BucketName.PROFILE_IMAGE.getBucketName(),
+                    "internship", internship.getInternship_id());
             String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
 
             try {
@@ -209,7 +236,8 @@ public class InternshipService {
                 throw new IllegalStateException(e);
             }
         } else {
-            throw new IllegalStateException("Internship not found");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship not found");
         }
     }
 
@@ -226,7 +254,8 @@ public class InternshipService {
                     .map(key -> fileStore.download(path, key))
                     .orElse(new byte[0]);
         } else {
-            throw new IllegalStateException("Failed to download internship image");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship not found");
         }
 
     }
@@ -246,11 +275,13 @@ public class InternshipService {
                 internship.setInternshipImageLink(null);
                 internshipRepository.save(internship);
             } else {
-                throw new IllegalStateException("Image not found");
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Image not found");
             }
 
         } else {
-            throw new IllegalStateException("Failed to delete internship image");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship not found");
         }
     }
 }

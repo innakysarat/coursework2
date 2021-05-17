@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 import java.util.Set;
 
+// ВСЁ ТОЛЬКО ДЛЯ ПОЛЬЗОВАТЕЛЕЙ
 @RestController
 @RequestMapping("api/deadlines")
 public class DeadlineController {

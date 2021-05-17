@@ -23,11 +23,12 @@ public class OrganizationController {
     public OrganizationController(OrganizationService organizationService) {
         this.organizationService = organizationService;
     }
-
+    // ДОБАВИТЬ ВЗЯТИЕ ВСЕХ СТАЖИРОВОК ОРГАНИЗАЦИИ
     @CrossOrigin
     @PostMapping
     @PreAuthorize("hasAuthority('organization:write')")
     public void addOrganization(@RequestBody Organization organization) {
+        // только руководитель
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         String username = authentication == null ? null : (String) authentication.getPrincipal();
@@ -42,13 +43,14 @@ public class OrganizationController {
     @GetMapping(path = "/{organization_id}")
     public Organization getOrganization(
             @PathVariable Long organization_id) {
-        // username correct & can get &
+        // любой пользователь, администратор и только нужный руководитель
         return organizationService.getOrganization(organization_id);
     }
 
     @CrossOrigin
     @GetMapping
     public List<Organization> getOrganizations() {
+        // любой пользователь и администратор
         return organizationService.getOrganizations();
     }
 
@@ -68,6 +70,7 @@ public class OrganizationController {
             @PathVariable Long organization_id,
             @RequestParam("username") String username
     ) {
+        // нужный руководитель + администратор
         Organization organization = organizationService.getOrganization(organization_id);
         organizationService.addOrganization(username, organization);
     }
@@ -79,6 +82,7 @@ public class OrganizationController {
             @RequestParam(value = "username") String username,
             @RequestParam("organization_name") String organization_name
     ) {
+        // нужный руководитель + любой админ
         organizationService.deleteLeader(username, organization_name);
     }
 
@@ -106,6 +110,8 @@ public class OrganizationController {
     @PreAuthorize("hasAuthority('organization:write')")
     public void updateInternship(@PathVariable Long organization_id,
                                  @RequestBody Organization organization) {
+        // проверка на нужного руководителя
+        // и все администраторы
         organizationService.updateOrganization(organization_id, organization.getName(), organization.getDescription(),
                 organization.getReference());
     }
@@ -132,6 +138,7 @@ public class OrganizationController {
     @DeleteMapping(path = "/{organization_id}/image")
     @PreAuthorize("hasAuthority('organization:write')")
     public void deleteFile(@PathVariable Long organization_id) {
+        // нужный руководитель + любой администратор
         organizationService.deleteImage(organization_id);
     }
 }

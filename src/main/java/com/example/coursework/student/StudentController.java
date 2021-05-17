@@ -1,9 +1,9 @@
 package com.example.coursework.student;
 
 import com.example.coursework.internships.Internship;
-import com.example.coursework.internships.InternshipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +16,12 @@ import java.util.Set;
 @RequestMapping("api/students")
 public class StudentController {
     private final StudentService studentService;
-    private final InternshipService internshipService;
 
     @Autowired
-    public StudentController(StudentService studentService, InternshipService internshipService) {
+    public StudentController(StudentService studentService) {
         this.studentService = studentService;
-        this.internshipService = internshipService;
     }
-
+    // ДОБАВИТЬ ВЗЯТИЕ ОРГАНИЗАЦИЙ РУКОВОДИТЕЛЯ
     @CrossOrigin
     @GetMapping
     public User getInfoAboutMyself() {
@@ -65,6 +63,16 @@ public class StudentController {
             @RequestParam(value = "username") String username
     ) {
         return studentService.getFavourites(username);
+    }
+    @CrossOrigin
+    @DeleteMapping(path = "/{user_id}")
+    public void deleteStudent(@PathVariable("user_id") Integer studentId) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication == null ? null : (String) authentication.getPrincipal();
+        if (!Objects.equals(username, "anonymousUser")) {
+            studentService.deleteStudent(studentId, username);
+        }
     }
 
     @CrossOrigin
