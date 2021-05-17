@@ -99,7 +99,7 @@ public class StudentService implements UserDetailsService {
             );
             //   throw new IllegalStateException("User cannot update someone else's information");
         }
-        if (user_byId.getRole().equals("ADMIN")) {
+        if (user_byId.getRole().equals("ADMIN") && !user.equals(user_byId)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Admin cannot be deleted"
             );
