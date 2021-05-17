@@ -194,4 +194,11 @@ public class OrganizationService {
             //  throw new IllegalStateException("Failed to delete organization image");
         }
     }
+
+    public void addLeaderToOrganization(String username, Organization organization) {
+        User user = userRepository.findByUsername(username);
+        organization.addLeader(user); // добавляем в список руководителей организации данного руководителя
+        userRepository.save(user);
+        organizationRepository.save(organization);
+    }
 }

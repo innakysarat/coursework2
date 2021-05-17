@@ -72,7 +72,7 @@ public class OrganizationController {
     ) {
         // нужный руководитель + администратор
         Organization organization = organizationService.getOrganization(organization_id);
-        organizationService.addOrganization(username, organization);
+        organizationService.addLeaderToOrganization(username, organization);
     }
 
     @CrossOrigin
