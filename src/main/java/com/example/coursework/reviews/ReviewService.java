@@ -52,9 +52,9 @@ public class ReviewService {
             if (!org.thymeleaf.util.StringUtils.isEmpty(review.getTextcomment())) {
                 review.setTextcomment(review.getTextcomment());
             }
-            if (review_check.getScore() != review.getScore()) {
+          /*  if (review_check.getScore() != review.getScore()) {
                 review.setScore(review.getScore());
-            }
+            }*/
             reviewRepository.save(review);
         } else {
             throw new ResponseStatusException(
@@ -72,7 +72,7 @@ public class ReviewService {
         User user_byUsername = userRepository.findByUsername(username);
         if (!user_byUsername.equals(user)) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "User cannot update someone else's information"
+                    HttpStatus.BAD_REQUEST, "User cannot get someone else's reviews"
             );
         } else {
             reviewSet = user.getReviews();
