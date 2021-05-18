@@ -30,7 +30,6 @@ public class ReviewController {
     @PostMapping
     @PreAuthorize("hasAuthority('review:add')")
     public void addReview(
-            // @AuthenticationPrincipal User currentUser,
             @RequestParam("internship_id") Long internship_id,
             @RequestBody Review review
     ) {
@@ -67,19 +66,18 @@ public class ReviewController {
      * Метод редактирования отзыва
      *
      * @param review отзыв
-     * @param text   текст отзыва
      */
     @PutMapping(path = "/{review_id}")
     @PreAuthorize("hasAuthority('review:edit')")
-    public void updateReviewText(
-            @PathVariable(name = "review_id") Review review,
-            @RequestParam("text") String text
+    public void updateReview(
+            @PathVariable(name = "review_id") Review review
     ) {
+        // добавить изменение по score
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         String username = authentication == null ? null : (String) authentication.getPrincipal();
         if (!Objects.equals(username, "anonymousUser")) {
-            reviewService.updateReviewText(username, review, text);
+            reviewService.updateReviewText(username, review);
         } else {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "User must login"

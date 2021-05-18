@@ -42,11 +42,11 @@ public class ReviewService {
         }
     }
 
-    public void updateReviewText(String username, Review review, String text) {
+    public void updateReviewText(String username, Review review) {
         User user = userRepository.findByUsername(username);
         if (review.getAuthor().equals(user)) {
-            if (!org.thymeleaf.util.StringUtils.isEmpty(text)) {
-                review.setTextcomment(text);
+            if (!org.thymeleaf.util.StringUtils.isEmpty(review.getTextcomment())) {
+                review.setTextcomment(review.getTextcomment());
             }
             reviewRepository.save(review);
         } else {
