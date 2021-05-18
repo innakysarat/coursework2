@@ -48,7 +48,7 @@ public class ReviewService {
                         HttpStatus.NOT_FOUND, "Review not found"
                 ));
         User user = userRepository.findByUsername(username);
-        if (review.getAuthor().equals(user)) {
+        if (review_check.getAuthor().equals(user)) {
             if (!org.thymeleaf.util.StringUtils.isEmpty(review.getTextcomment())) {
                 review.setTextcomment(review.getTextcomment());
             }
