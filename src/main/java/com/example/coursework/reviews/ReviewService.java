@@ -50,12 +50,12 @@ public class ReviewService {
         User user = userRepository.findByUsername(username);
         if (review_check.getAuthor().equals(user)) {
             if (!org.thymeleaf.util.StringUtils.isEmpty(review.getTextcomment())) {
-                review.setTextcomment(review.getTextcomment());
+                review_check.setTextcomment(review.getTextcomment());
             }
           /*  if (review_check.getScore() != review.getScore()) {
                 review.setScore(review.getScore());
             }*/
-            reviewRepository.save(review);
+            reviewRepository.save(review_check);
         } else {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cannot update someone else's review"
