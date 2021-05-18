@@ -4,12 +4,17 @@ import com.example.coursework.options.*;
 import com.example.coursework.student.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -112,18 +117,37 @@ public class InternshipController {
     @CrossOrigin
     @PostMapping("/favourites")
     public void addFavourites(
-            @RequestParam(value = "username") String username,
             @RequestParam(value = "internship_name") String internship_name
     ) {
-        internshipService.addFavourites(username, internship_name);
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication == null ? null : (String) authentication.getPrincipal();
+        if (!Objects.equals(username, "anonymousUser")) {
+            internshipService.addFavourites(username, internship_name);
+        }
+        else{
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found"
+            );
+        }
     }
     @CrossOrigin
     @DeleteMapping("/favourites")
     public void deleteFavourites(
-            @RequestParam(value = "username") String username,
             @RequestParam(value = "internship_name") String internship_name
     ) {
-        internshipService.deleteFavourites(username, internship_name);
+        // тот самый пользователь
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication == null ? null : (String) authentication.getPrincipal();
+        if (!Objects.equals(username, "anonymousUser")) {
+            internshipService.deleteFavourites(username, internship_name);
+        }
+        else{
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found"
+            );
+        }
     }
     @CrossOrigin
     @GetMapping("/favourites")

@@ -2,12 +2,14 @@ package com.example.coursework.student;
 
 import com.example.coursework.internships.Internship;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
 import java.util.Set;
@@ -21,6 +23,7 @@ public class StudentController {
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
+
     // ДОБАВИТЬ ВЗЯТИЕ ОРГАНИЗАЦИЙ РУКОВОДИТЕЛЯ
     @CrossOrigin
     @GetMapping
@@ -36,6 +39,7 @@ public class StudentController {
         }
         return user;
     }
+
     @CrossOrigin
     @PostMapping
     public void registerNewStudent(@RequestBody User user) {
@@ -60,10 +64,19 @@ public class StudentController {
     @CrossOrigin
     @GetMapping("/favourites")
     public Set<Internship> getFavourites(
-            @RequestParam(value = "username") String username
     ) {
-        return studentService.getFavourites(username);
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication == null ? null : (String) authentication.getPrincipal();
+        if (!Objects.equals(username, "anonymousUser")) {
+            return studentService.getFavourites(username);
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found"
+            );
+        }
     }
+
     @CrossOrigin
     @DeleteMapping(path = "/{user_id}")
     public void deleteStudent(@PathVariable("user_id") Integer studentId) {

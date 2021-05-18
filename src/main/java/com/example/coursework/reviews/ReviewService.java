@@ -56,15 +56,21 @@ public class ReviewService {
         }
     }
 
-    public Set<Review> getUserReviews(Integer user_id) {
-        Optional<User> userOptional = userRepository.findById(user_id);
-        User user;
-        Set<Review> reviewSet = new HashSet<>();
-        if (userOptional.isPresent()) {
-            user = userOptional.get();
+    public Set<Review> getUserReviews(Integer user_id, String username) {
+        User user = userRepository.findById(user_id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found"
+                ));
+        Set<Review> reviewSet;
+        User user_byUsername = userRepository.findByUsername(username);
+        if (!user_byUsername.equals(user)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "User cannot update someone else's information"
+            );
+        } else {
             reviewSet = user.getReviews();
+            return reviewSet;
         }
-        return reviewSet;
     }
 
     public Set<Review> getInternshipReviews(Long internship_id) {

@@ -111,7 +111,16 @@ public class ReviewController {
             @PathVariable Integer user_id
     ) {
         // нужный пользователь + администратор
-        return reviewService.getUserReviews(user_id);
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication == null ? null : (String) authentication.getPrincipal();
+        if (!Objects.equals(username, "anonymousUser")) {
+            return reviewService.getUserReviews(user_id, username);
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found"
+            );
+        }
     }
 
 }
