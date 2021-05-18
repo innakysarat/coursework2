@@ -32,7 +32,7 @@ public class DeadlineService {
     public void addDeadline(String username, Long internship_id, Deadline deadline) {
         User user = userRepository.findByUsername(username);
         Internship internship = internshipRepository.findById(internship_id)
-                .orElseThrow(() ->  new ResponseStatusException(
+                .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Internship not found"));
         deadline.setUser(user);
         deadline.setInternship(internship);
@@ -46,7 +46,7 @@ public class DeadlineService {
     public void deleteDeadline(Long deadline_id, String username) {
         User user = userRepository.findByUsername(username);
         Deadline deadline = deadlineRepository.findById(deadline_id)
-                .orElseThrow(() ->  new ResponseStatusException(
+                .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Deadline not found"));
         Internship internship = deadline.getInternship();
         deadlineRepository.deleteById(deadline_id);
@@ -65,7 +65,7 @@ public class DeadlineService {
                                LocalDate finish, LocalDate start, boolean isCompleted) {
         Deadline deadline = deadlineRepository.findById(deadline_id)
                 .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Deadline not found"));
+                        HttpStatus.NOT_FOUND, "Deadline not found"));
         User user = userRepository.findByUsername(username);
         Internship internship = deadline.getInternship();
         internship.removeDeadline(deadline);
@@ -86,6 +86,7 @@ public class DeadlineService {
         if (isCompleted != deadline.isCompleted()) {
             deadline.setCompleted(isCompleted);
         }
+        deadline.setDeadline_id(deadline_id);
         user.addDeadline(deadline);
         internship.addDeadline(deadline);
         userRepository.save(user);

@@ -48,13 +48,13 @@ public class ReviewController {
 
     @DeleteMapping(path = "/{review_id}")
     public void deleteReview(
-            @PathVariable(name = "review_id") Long review
+            @PathVariable(name = "review_id") Long review_id
     ) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         String username = authentication == null ? null : (String) authentication.getPrincipal();
         if (!Objects.equals(username, "anonymousUser")) {
-            reviewService.deleteReview(username, review);
+            reviewService.deleteReview(username, review_id);
         } else {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "User must login"

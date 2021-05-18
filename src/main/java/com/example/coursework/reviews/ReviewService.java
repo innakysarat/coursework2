@@ -91,6 +91,7 @@ public class ReviewService {
         return reviewSet;
     }
 
+    // ПОЧИНИТЬ !!!!
     public void deleteReview(String username, Long review_id) {
         User user = userRepository.findByUsername(username);
         Review review = reviewRepository.findById(review_id)

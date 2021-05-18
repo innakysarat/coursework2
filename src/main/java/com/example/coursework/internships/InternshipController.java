@@ -114,6 +114,7 @@ public class InternshipController {
     public Set<Integer> findPrices() {
         return internshipService.findPrices();
     }
+
     @CrossOrigin
     @PostMapping("/favourites")
     public void addFavourites(

@@ -68,6 +68,10 @@ public class Deadline {
         return user;
     }
 
+    public void setDeadline_id(Long deadline_id) {
+        this.deadline_id = deadline_id;
+    }
+
     public void setInternship(Internship internship) {
         this.internship = internship;
     }
