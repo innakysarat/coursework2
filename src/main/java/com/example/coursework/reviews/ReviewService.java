@@ -42,16 +42,23 @@ public class ReviewService {
         }
     }
 
-    public void updateReviewText(String username, Review review) {
+    public void updateReviewText(String username, Review review, Long review_id) {
+        Review review_check = reviewRepository.findById(review_id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Review not found"
+                ));
         User user = userRepository.findByUsername(username);
         if (review.getAuthor().equals(user)) {
             if (!org.thymeleaf.util.StringUtils.isEmpty(review.getTextcomment())) {
                 review.setTextcomment(review.getTextcomment());
             }
+            if (review_check.getScore() != review.getScore()) {
+                review.setScore(review.getScore());
+            }
             reviewRepository.save(review);
         } else {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Cannot delete someone else's review"
+                    HttpStatus.BAD_REQUEST, "Cannot update someone else's review"
             );
         }
     }

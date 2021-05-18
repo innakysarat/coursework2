@@ -70,14 +70,15 @@ public class ReviewController {
     @PutMapping(path = "/{review_id}")
     @PreAuthorize("hasAuthority('review:edit')")
     public void updateReview(
-            @PathVariable(name = "review_id") Review review
+            @PathVariable(name = "review_id") Long review_id,
+            @RequestBody Review review
     ) {
         // добавить изменение по score
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         String username = authentication == null ? null : (String) authentication.getPrincipal();
         if (!Objects.equals(username, "anonymousUser")) {
-            reviewService.updateReviewText(username, review);
+            reviewService.updateReviewText(username, review, review_id);
         } else {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "User must login"
