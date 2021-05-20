@@ -54,7 +54,6 @@ public class OrganizationService {
         } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Leader and/or organization not found");
-            //  throw new IllegalStateException("Leader and/or organization not found");
         }
     }
 
@@ -88,7 +87,6 @@ public class OrganizationService {
         if (!exists) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Internship with id " + organization_id + " not found");
-            // throw new IllegalStateException("Internship with id " + organization_id + " not found");
         }
         organizationRepository.deleteById(organization_id);
     }
@@ -120,6 +118,9 @@ public class OrganizationService {
                 organization.setReference(reference);
             }
             organizationRepository.save(organization);
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Organization not found");
         }
     }
 
@@ -146,7 +147,6 @@ public class OrganizationService {
         } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Organization not found");
-            // throw new IllegalStateException("Organization not found");
         }
 
     }
@@ -165,7 +165,6 @@ public class OrganizationService {
         } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Failed to download organization image");
-            // throw new IllegalStateException("Failed to download organization image");
         }
     }
 
@@ -191,7 +190,6 @@ public class OrganizationService {
         } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Failed to delete organization image");
-            //  throw new IllegalStateException("Failed to delete organization image");
         }
     }
 

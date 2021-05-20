@@ -88,6 +88,7 @@ public class StudentService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    // FIX IT
     public void deleteStudent(Integer user_id, String username) {
         User user = userRepository.findByUsername(username);
         User user_byId = userRepository.findById(user_id)
@@ -132,7 +133,6 @@ public class StudentService implements UserDetailsService {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "User cannot update someone else's information"
             );
-            //   throw new IllegalStateException("User cannot update someone else's information");
         } else {
             updateStudent(user, name, surname, patronymic, email, phone, username_update, password, dayOfBirth);
         }

@@ -86,6 +86,11 @@ public class StudentController {
         if (!Objects.equals(username, "anonymousUser")) {
             studentService.deleteStudent(studentId, username);
         }
+        else{
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "User must login"
+            );
+        }
     }
 
     @CrossOrigin

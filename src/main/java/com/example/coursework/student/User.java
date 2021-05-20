@@ -50,6 +50,7 @@ public class User implements UserDetails {
             columnDefinition = "TEXT"
     )
     private String role;
+    @JsonIgnore
     @Column(
             name = "password",
             nullable = false,

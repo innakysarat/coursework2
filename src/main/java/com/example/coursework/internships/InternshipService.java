@@ -151,6 +151,9 @@ public class InternshipService {
             }
             internship.setChecked(false);
             internshipRepository.save(internship);
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Internship not found");
         }
     }
 
@@ -289,8 +292,7 @@ public class InternshipService {
         Internship internship = internshipRepository.findByName(internship_name);
         if (internship != null) {
             return internship.getOrganization().getOrganization_id();
-        }
-        else{
+        } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Internship not found");
         }
