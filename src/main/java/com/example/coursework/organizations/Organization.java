@@ -47,7 +47,7 @@ public class Organization {
             CascadeType.MERGE
     })
     @JoinTable(
-            name = "users_organizations",
+            name = "users_organization",
             joinColumns = @JoinColumn(name = "organization_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
