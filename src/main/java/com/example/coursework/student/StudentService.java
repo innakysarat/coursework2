@@ -98,13 +98,11 @@ public class StudentService implements UserDetailsService {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "User cannot delete someone else"
             );
-            //   throw new IllegalStateException("User cannot update someone else's information");
         }
         if (user_byId.getRole().equals("ADMIN") && !user.equals(user_byId)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Admin cannot be deleted"
             );
-            // throw new IllegalStateException("Cannot delete admin");
         }
         userRepository.deleteById(user_id);
 
@@ -172,7 +170,6 @@ public class StudentService implements UserDetailsService {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Email is taken"
                 );
-                // throw new IllegalStateException("Email is taken");
             }
             user.setEmail(email);
         }
@@ -197,7 +194,6 @@ public class StudentService implements UserDetailsService {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Username is taken"
                 );
-                // throw new IllegalStateException("Username is taken");
             }
             user.setUsername(username);
         }
@@ -229,27 +225,33 @@ public class StudentService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = userRepository.findByUsername(username);
-        String role = user.getRole();
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        if (user != null) {
+            String role = user.getRole();
+            Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
-        if (role.equals("ADMIN")) {
-            for (SimpleGrantedAuthority s : UserRole.ADMIN.getGrantedAuthorities()) {
-                grantedAuthorities.add(new SimpleGrantedAuthority(s.getAuthority()));
+            if (role.equals("ADMIN")) {
+                for (SimpleGrantedAuthority s : UserRole.ADMIN.getGrantedAuthorities()) {
+                    grantedAuthorities.add(new SimpleGrantedAuthority(s.getAuthority()));
+                }
+                user.setGrantedAuthorities(UserRole.ADMIN.getGrantedAuthorities());
+            } else if (role.equals("LEADER")) {
+                for (SimpleGrantedAuthority s : UserRole.LEADER.getGrantedAuthorities()) {
+                    grantedAuthorities.add(new SimpleGrantedAuthority(s.getAuthority()));
+                }
+                user.setGrantedAuthorities(UserRole.LEADER.getGrantedAuthorities());
+            } else {
+                for (SimpleGrantedAuthority s : UserRole.STUDENT.getGrantedAuthorities()) {
+                    grantedAuthorities.add(new SimpleGrantedAuthority(s.getAuthority()));
+                }
+                user.setGrantedAuthorities(UserRole.STUDENT.getGrantedAuthorities());
             }
-            user.setGrantedAuthorities(UserRole.ADMIN.getGrantedAuthorities());
-        } else if (role.equals("LEADER")) {
-            for (SimpleGrantedAuthority s : UserRole.LEADER.getGrantedAuthorities()) {
-                grantedAuthorities.add(new SimpleGrantedAuthority(s.getAuthority()));
-            }
-            user.setGrantedAuthorities(UserRole.LEADER.getGrantedAuthorities());
+            String password = passwordEncoder.encode(user.getPassword());
+            return new org.springframework.security.core.userdetails.User(user.getUsername(), password, grantedAuthorities);
         } else {
-            for (SimpleGrantedAuthority s : UserRole.STUDENT.getGrantedAuthorities()) {
-                grantedAuthorities.add(new SimpleGrantedAuthority(s.getAuthority()));
-            }
-            user.setGrantedAuthorities(UserRole.STUDENT.getGrantedAuthorities());
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found. Check your username"
+            );
         }
-        String password = passwordEncoder.encode(user.getPassword());
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), password, grantedAuthorities);
     }
 
     public Set<Internship> getFavourites(String username) {
@@ -261,7 +263,6 @@ public class StudentService implements UserDetailsService {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "User not found"
             );
-            //  throw new IllegalStateException("User not found");
         }
     }
 
@@ -294,7 +295,6 @@ public class StudentService implements UserDetailsService {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "User not found"
             );
-            // throw new IllegalStateException("User not found");
         }
     }
 
@@ -313,9 +313,7 @@ public class StudentService implements UserDetailsService {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Failed to download user image. User not found"
             );
-            //  throw new IllegalStateException("Failed to download user image");
         }
-
     }
 
     public void deleteImage(Integer user_id) {
@@ -336,14 +334,12 @@ public class StudentService implements UserDetailsService {
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Image not found"
                 );
-                // throw new IllegalStateException("Image not found");
             }
 
         } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Failed to delete user image. User not found"
             );
-            //  throw new IllegalStateException("Failed to delete user image");
         }
     }
 
@@ -355,7 +351,6 @@ public class StudentService implements UserDetailsService {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "User cannot update someone else's information"
             );
-            //   throw new IllegalStateException("User cannot update someone else's information");
         } else {
             return user.getOrganizations();
         }

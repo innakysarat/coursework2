@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-@Entity
+@Entity(name = "Internship")
 @Table(
         name = "internship",
         uniqueConstraints = {

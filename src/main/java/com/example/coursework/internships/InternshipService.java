@@ -77,10 +77,18 @@ public class InternshipService {
                         HttpStatus.NOT_FOUND, "Organization not found"));
         internship.assignOrganization(organization); // добавляем связь стажировка - организация
         organization.addInternship(internship); // добавляем к списку стажировок орагнизации данную стажировку
-        countryDao.addCountry(internship.getCountry());
-        subjectDao.addSubject(internship.getSubject());
-        languageDao.addLanguage(internship.getLanguage());
-        priceDao.addPrice(internship.getPrice());
+        if (internship.getCountry() != null) {
+            countryDao.addCountry(internship.getCountry());
+        }
+        if (internship.getSubject() != null) {
+            subjectDao.addSubject(internship.getSubject());
+        }
+        if (internship.getLanguage() != null) {
+            languageDao.addLanguage(internship.getLanguage());
+        }
+        if (internship.getPrice() != null) {
+            priceDao.addPrice(internship.getPrice());
+        }
         internshipRepository.save(internship);
     }
 
