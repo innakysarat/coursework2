@@ -102,7 +102,7 @@ public class User implements UserDetails {
     }
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "leaders")
+    @ManyToMany(mappedBy = "users")
     private final Set<Organization> organizations = new HashSet<>();
 
     @JsonIgnore

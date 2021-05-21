@@ -51,7 +51,7 @@ public class Organization {
             joinColumns = @JoinColumn(name = "organization_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private final Set<User> leaders = new HashSet<>();
+    private final Set<User> users = new HashSet<>();
 
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -78,17 +78,17 @@ public class Organization {
     }
 
     public void addLeader(User user) {
-        leaders.add(user);
+        users.add(user);
         user.getOrganizations().add(this);
     }
 
     public void removeLeader(User user) {
-        leaders.remove(user);
+        users.remove(user);
         user.getOrganizations().remove(this);
     }
 
     public Set<User> getLeaders() {
-        return leaders;
+        return users;
     }
 
     public Set<Internship> getInternships() {
