@@ -89,6 +89,7 @@ public class User implements UserDetails {
     )
     private String phone;
     @Column(
+            name = "image",
             columnDefinition = "TEXT"
     )
     private String userImageLink;
