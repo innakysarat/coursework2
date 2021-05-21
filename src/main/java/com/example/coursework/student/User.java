@@ -187,7 +187,7 @@ public class User implements UserDetails {
         return username;
     }
 
-  //  @JsonIgnore
+   @JsonIgnore
     public String getPassword() {
         return password;
     }
