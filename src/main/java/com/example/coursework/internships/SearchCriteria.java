@@ -5,7 +5,6 @@ public class SearchCriteria {
     private String operation;
     private Object value;
     public SearchCriteria() {
-
     }
 
     public SearchCriteria(final String key, final String operation, final Object value) {
