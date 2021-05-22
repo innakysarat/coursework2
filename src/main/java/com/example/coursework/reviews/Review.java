@@ -5,6 +5,8 @@ import com.example.coursework.student.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Entity(name = "Review")
 @Table(
@@ -23,6 +25,8 @@ public class Review {
             columnDefinition = "TEXT"
     )
     private String textcomment;
+    @Min(value = 1, message = "Оценка должна быть не меньше 1")
+    @Max(value = 10, message = "Оценка должна быть не больше 10")
     @Column(
             name = "score",
             scale = 1,

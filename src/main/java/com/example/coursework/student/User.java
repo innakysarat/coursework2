@@ -10,8 +10,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.*;
 
 @Entity(name = "User")
@@ -39,6 +41,8 @@ public class User implements UserDetails {
             updatable = false
     )
     private Integer user_id;
+    @NotBlank(message = "Имя не может быть пустым")
+    @NotNull(message = "Поле с именем должно быть заполнено")
     @Column(
             name = "username",
             nullable = false,
@@ -50,7 +54,8 @@ public class User implements UserDetails {
             columnDefinition = "TEXT"
     )
     private String role;
-
+    @NotBlank(message = "Имя не может быть пустым")
+    @NotNull(message = "Поле с паролем должно быть заполнено")
     @Column(
             name = "password",
             nullable = false,
@@ -78,6 +83,9 @@ public class User implements UserDetails {
     private LocalDate dayOfBirth;
     /* @Transient // = not a column
      private Integer age;*/
+
+    @Email(message = "Некорректный адрес электронной почты")
+    @NotBlank(message = "Адрес электронной почты не может быть пустым")
     @Column(
             name = "email",
             columnDefinition = "TEXT"
